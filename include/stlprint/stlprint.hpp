@@ -1,5 +1,4 @@
 #pragma once
-//#define SHOW_ADDR
 
 #include <unordered_map>
 #include <utility>
@@ -97,7 +96,17 @@ namespace
     }
 
     template<typename T>
-    std::enable_if_t<!is_str<T>::value, T>
+    std::enable_if_t<is_char<T>::value, std::string>
+        to_string(const T& val)
+    {
+        std::stringstream ss;
+        ss << "\'" << val << "\'";
+        return ss.str();
+    }
+
+
+    template<typename T>
+    std::enable_if_t<!is_str<T>::value && !is_char<T>::value, T>
         to_string(const T& val)
     {
         return val;
@@ -111,23 +120,6 @@ namespace
         {
             std::stringstream ss;
             ss << TuplePrinter<N - 1>::print(ar);
-            using TT = std::remove_const_t<std::remove_reference_t<decltype(std::get<N - 1>(ar))>>;
-            /*if (is_str<TT>::value)
-            {
-                ss << "\"" << std::get<N - 1>(ar) << "\"";
-            }
-            else if (is_str<TT>::value)
-            {
-                ss << "\"" << std::get<N - 1>(ar) << "\"";
-            }
-            else if (std::is_same<char, TT>::value || std::is_same<wchar_t, TT>::value)
-            {
-                ss << "\'" << std::get<N - 1>(ar) << "\'";
-            }
-            else
-            {
-                ss << std::get<N - 1>(ar);
-            }*/
             ss << to_string(std::get<N - 1>(ar));
             ss << delimiter;
             return ss.str();
@@ -143,16 +135,6 @@ namespace
             return "";
         }
     };
-
-    
-
-    /*template<typename T, typename R = typename T::value_type>
-    std::enable_if_t<is_c_str<T>::value>, std::ostream&>
-        operator<<(std::ostream& xx, const T& ar)
-    {
-        xx << std::valarray<R>(ar);
-        return xx;
-    }*/
 
     template<typename T>
     std::string printElementsCont(const T& ar, std::string&& _name, std::size_t N)
@@ -181,18 +163,6 @@ namespace
             
             ss << to_string(x);
 
-            /*if (std::is_same<std::string, TT>::value || std::is_same<std::wstring, TT>::value)
-            {
-                ss << "\"" << x << "\"";
-            }
-            else if (std::is_same<char, TT>::value || std::is_same<wchar_t, TT>::value)
-            {
-                ss << "\'" << x << "\'";
-            }
-            else
-            {
-                ss << x;
-            }*/
         }
         ss << get_end_brace(_name);
         return ss.str();
@@ -204,15 +174,7 @@ namespace
         std::stringstream ss;
         ss << get_name(_name);
         ss << get_begin_brace(_name);
-        using TT = std::remove_const_t<std::remove_reference_t<decltype(*ptr)>>;
-        if (std::is_same<std::string, TT>::value)
-        {
-            ss << "\"" << *ptr << "\"";
-        }
-        else
-        {
-            ss << *ptr;
-        }
+        ss << to_string(*ptr);
         return ss.str();
     }
 
