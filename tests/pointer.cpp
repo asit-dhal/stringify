@@ -6,7 +6,7 @@ auto const CPOINTER_NAME = "cptr";
 
 TEST_CASE("pointer_numbers", "[pointer_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     int *p1 = new int; *p1 = 20;
     float *p2 = new float; *p2 = 20.1f;
     const int *p3 = new int(3);

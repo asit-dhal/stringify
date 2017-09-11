@@ -4,7 +4,7 @@
 #
 
 cmake_minimum_required(VERSION 3.1)
-project(stlprint VERSION 1.0.0)
+project(stringify VERSION 1.0.0)
 include(CTest)
 include(CMakeDependentOption)
 
@@ -15,16 +15,16 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCH
     set(CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}")
 endif()
 
-add_library(stlprint INTERFACE)
+add_library(stringify INTERFACE)
 
-option(STLPRINT_BUILD_EXAMPLES "Build examples" ON)
-cmake_dependent_option(STLPRINT_BUILD_TESTING 
-    "Build stlprint tests" ON
+option(stringify_BUILD_EXAMPLES "Build examples" ON)
+cmake_dependent_option(stringify_BUILD_TESTING 
+    "Build stringify tests" ON
     "BUILD_TESTING" ON
 )
 
 target_include_directories(
-    stlprint
+    stringify
     INTERFACE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
@@ -32,11 +32,11 @@ target_include_directories(
 
 set(HEADER_BASE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-if(STLPRINT_BUILD_EXAMPLES)
+if(stringify_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(STLPRINT_BUILD_TESTING)
+if(stringify_BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
@@ -61,15 +61,15 @@ write_basic_package_version_file(
 
 # Note: use 'targets_export_name'
 configure_file("cmake/Config.cmake.in" "${project_config}" @ONLY)
-configure_file("cmake/stlprint.pc.in" "${pkg_config}" @ONLY)
+configure_file("cmake/stringify.pc.in" "${pkg_config}" @ONLY)
 
 install(
-    TARGETS stlprint
+    TARGETS stringify
     EXPORT "${targets_export_name}"
     INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(DIRECTORY "include/stlprint" DESTINATION "${include_install_dir}")
+install(DIRECTORY "include/stringify" DESTINATION "${include_install_dir}")
 
 install(
     FILES "${project_config}" "${version_config}"
@@ -87,5 +87,5 @@ install(
     DESTINATION "${config_install_dir}"
 )
 
-file(GLOB_RECURSE stlprint_include_SRCS "${HEADER_BASE}/*.hpp")
-add_custom_target(stlprint_headers_for_ide SOURCES ${stlprint_include_SRCS})
+file(GLOB_RECURSE stringify_include_SRCS "${HEADER_BASE}/*.hpp")
+add_custom_target(stringify_headers_for_ide SOURCES ${stringify_include_SRCS})

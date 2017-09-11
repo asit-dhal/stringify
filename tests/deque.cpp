@@ -8,7 +8,7 @@ auto const DEQUE_NAME = "deq";
 
 TEST_CASE("deque_numbers", "[deque_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::deque<int> d_int{ 1, 2, 3, 4, 5 };
     std::deque<float> d_float{ 1.1f, 2.2f, 3.3f, 4.4f, 5.5f };
     std::stringstream ss1;
@@ -28,7 +28,7 @@ TEST_CASE("deque_numbers", "[deque_numbers]")
 
 TEST_CASE("deque_string", "[deque_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::deque<std::string> d_str{ "one", "two", "three", "four" };
     std::stringstream ss1;
     std::stringstream ss2;
@@ -40,7 +40,7 @@ TEST_CASE("deque_string", "[deque_string]")
 
 TEST_CASE("deque_char", "[deque_char]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::deque<char> d_char{ 'a', 'b', 'c', 'd' };
     std::stringstream ss1;
     std::stringstream ss2;

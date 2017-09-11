@@ -22,14 +22,14 @@
 # *************************************************************************/
 
 cmake_minimum_required(VERSION 3.0)
-project(StlPrintExamples)
+project(stringifyExamples)
 
-if(TARGET stlprint)
+if(TARGET stringify)
   # Part of the main project
-  add_library(stlprint::stlprint ALIAS stlprint)
+  add_library(stringify::stringify ALIAS stringify)
 else()
   # Stand-alone build
-  find_package(stlprint CONFIG REQUIRED)
+  find_package(stringify CONFIG REQUIRED)
 endif()
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -38,7 +38,7 @@ foreach(dir ${dirs})
 endforeach()
 
 add_executable(example example.cpp)
-target_link_libraries(example stlprint::stlprint)
+target_link_libraries(example stringify::stringify)
 
 enable_testing()
 add_test(NAME RunExample COMMAND example)

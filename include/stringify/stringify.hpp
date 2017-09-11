@@ -198,7 +198,7 @@ namespace
 
 }
 
-namespace stlprint
+namespace stringify
 {
     template<typename T1, typename T2>
     std::ostream& operator<<(std::ostream& xx, const std::pair<T1, T2>& pr)

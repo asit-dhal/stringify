@@ -11,9 +11,9 @@
 #include <utility>
 #include <tuple>
 
-#include "stlprint\stlprint.hpp"
+#include "stringify\stringify.hpp"
 
-using namespace stlprint;
+using namespace stringify;
 
 void containerExample()
 {
@@ -76,10 +76,10 @@ void pointerExample()
 
 void tupleExample()
 {
-  /*  auto pr = std::make_pair<int, std::string>(200, "two hundred");
+    auto pr = std::make_pair<int, std::string>(200, "two hundred");
     std::cout << "pair<int, std::string>: " << pr << std::endl;
-    auto tp = std::make_tuple<int, std::string, char*, float>(200, "two hundred", "make string", 2.3f);
-    std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;*/
+    //auto tp = std::make_tuple<int, std::string, char*, float>(200, "two hundred", "make string", 2.3f);
+    //std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
 }
 
 int main()

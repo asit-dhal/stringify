@@ -7,7 +7,7 @@ auto const LIST_NAME = "lst";
 
 TEST_CASE("list_numbers", "[list_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::list<int> l_int{ 1, 2, 3, 4, 5 };
     std::list<float> l_float{ 1.1f, 2.2f, 3.3f, 4.4f, 5.5f };
     std::stringstream ss1;
@@ -26,7 +26,7 @@ TEST_CASE("list_numbers", "[list_numbers]")
 
 TEST_CASE("list_string", "[list_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::list<std::string> l_str{ "one", "two", "three", "four" };
     std::stringstream ss1;
     std::stringstream ss2;
@@ -38,7 +38,7 @@ TEST_CASE("list_string", "[list_string]")
 
 TEST_CASE("list_char", "[list_char]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::list<char> l_char{ 'a', 'b', 'c', 'd' };
     std::stringstream ss1;
     std::stringstream ss2;

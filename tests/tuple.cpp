@@ -7,7 +7,7 @@ auto const TUPLE_NAME = "tp";
 
 TEST_CASE("tuple", "[tuple]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     auto p1 = std::make_tuple(1, 2, 3.4, 'a');
     auto p2 = std::make_tuple("test", 2, std::string("abc"));
     auto p3 = std::make_tuple(std::string("test"), 2.9);

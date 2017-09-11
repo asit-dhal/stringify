@@ -4,7 +4,7 @@
 
 TEST_CASE("shared_ptr", "[shared_ptr]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::stringstream ss;
 
     std::shared_ptr<int> ptr1 = std::make_shared<int>(2);
@@ -35,7 +35,7 @@ TEST_CASE("shared_ptr", "[shared_ptr]")
 
 TEST_CASE("unique_ptr", "[unique_ptr]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::stringstream ss;
 
     std::unique_ptr<int> ptr1 = std::make_unique<int>(2);
@@ -56,7 +56,7 @@ TEST_CASE("unique_ptr", "[unique_ptr]")
 
 TEST_CASE("weak_ptr", "[weak_ptr]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::stringstream ss;
 
     std::shared_ptr<int> sp_ptr1 = std::make_shared<int>(2);

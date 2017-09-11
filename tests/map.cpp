@@ -7,7 +7,7 @@ auto const MAP_NAME = "mp";
 
 //TEST_CASE("map_numbers", "[map_numbers]")
 //{
-//    using namespace stlprint;
+//    using namespace stringify;
 //    std::map<int, int> mp1;
 //    mp1[1] = 10;
 //    mp1[2] = 30;
@@ -36,7 +36,7 @@ auto const MAP_NAME = "mp";
 
 //TEST_CASE("set_string", "[set_string]")
 //{
-//    using namespace stlprint;
+//    using namespace stringify;
 //    std::set<std::string> s_str{ "one", "two", "three", "four" };
 //    std::stringstream ss1;
 //    std::stringstream ss2;
@@ -48,7 +48,7 @@ auto const MAP_NAME = "mp";
 //
 //TEST_CASE("set_char", "[set_char]")
 //{
-//    using namespace stlprint;
+//    using namespace stringify;
 //    std::set<char> s_char{ 'a', 'b', 'c', 'd' };
 //    std::stringstream ss1;
 //    std::stringstream ss2;

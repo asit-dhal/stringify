@@ -10,4 +10,4 @@
 
 #include "catch.hpp"
 
-#include "../include/stlprint/stlprint.hpp"
+#include "../include/stringify/stringify.hpp"

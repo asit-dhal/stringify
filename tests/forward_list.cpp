@@ -7,7 +7,7 @@ auto const FL_NAME = "flst";
 
 TEST_CASE("fl_numbers", "[fl_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::forward_list<int> fl_int{ 1, 2, 3, 4, 5 };
     std::forward_list<float> fl_float{ 1.1f, 2.2f, 3.3f, 4.4f, 5.5f };
     std::forward_list<int> fl_dup_int{ 1, 1, 1, 2, 3, 3, 4, 5, 0, 0 };
@@ -33,7 +33,7 @@ TEST_CASE("fl_numbers", "[fl_numbers]")
 
 TEST_CASE("fl_string", "[fl_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::forward_list<std::string> fl_str{ "one", "two", "three", "four" };
     std::forward_list<char*> fl_cstr{ "cone", "ctwo", "cthree", "cfour" };
     std::stringstream ss1;

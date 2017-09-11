@@ -6,7 +6,7 @@ auto const CARRAY_NAME = "carr";
 
 TEST_CASE("carray_numbers", "[carray_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     int arr_int[5] = { 1, 2, 3, 4, 5 };
     float arr_float[5] = { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f };
     std::stringstream ss1;
@@ -25,7 +25,7 @@ TEST_CASE("carray_numbers", "[carray_numbers]")
 
 TEST_CASE("carray_string", "[carray_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::string carray_str[4] = { "one", "two", "three", "four" };
     std::stringstream ss1;
     std::stringstream ss2;
@@ -37,7 +37,7 @@ TEST_CASE("carray_string", "[carray_string]")
 
 TEST_CASE("carray_char", "[carray_char]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     char array_char[5] = { 'a', 'b', 'c', 'd', NULL };
     std::stringstream ss;
     ss << array_char;

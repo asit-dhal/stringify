@@ -7,7 +7,7 @@ auto const PAIR_NAME = "pr";
 
 TEST_CASE("pair", "[pair]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     auto p1 = std::make_pair(1, 2.1f);
     auto p2 = std::make_pair('a', 2);
     auto p3 = std::make_pair("test", 2);

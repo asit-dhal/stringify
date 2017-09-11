@@ -8,7 +8,7 @@ auto const MSET_NAME = "mset";
 
 TEST_CASE("multiset_numbers", "[multiset_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::multiset<float> ms_float{ 1.1f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 5.5f };
     std::multiset<int> ms_int{ 1, 1, 1, 2, 3, 3, 4, 5, 0, 0 };
     std::stringstream ss1;
@@ -27,7 +27,7 @@ TEST_CASE("multiset_numbers", "[multiset_numbers]")
 
 TEST_CASE("multiset_string", "[multiset_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::multiset<std::string> ms_str{ "one", "two", "three", "four", "three", "two" };
     std::stringstream ss1;
     std::stringstream ss2;
@@ -39,7 +39,7 @@ TEST_CASE("multiset_string", "[multiset_string]")
 
 TEST_CASE("multiset_char", "[multiset_char]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::multiset<char> ms_char{ 'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd' };
     std::stringstream ss1;
     std::stringstream ss2;

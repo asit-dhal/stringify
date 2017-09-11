@@ -10,7 +10,7 @@ auto const CREV_ITERATOR_NAME = "critr";
 
 TEST_CASE("iterator_num", "[iterator_num]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::vector<int> v1{ 1, 2, 3, 4 ,5 };
     auto v1_itr = std::begin(v1);
     auto v1_citr = std::cbegin(v1);
@@ -45,7 +45,7 @@ TEST_CASE("iterator_num", "[iterator_num]")
 
 TEST_CASE("iterator_string", "[iterator_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::vector<std::string> v1{ "one", "two", "three", "four"};
     auto v1_itr = std::begin(v1);
     auto v1_citr = std::cbegin(v1);

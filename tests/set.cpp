@@ -7,7 +7,7 @@ auto const SET_NAME = "set";
 
 TEST_CASE("set_numbers", "[set_numbers]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::set<int> s_int{ 1, 2, 3, 4, 5 };
     std::set<float> s_float{ 1.1f, 2.2f, 3.3f, 4.4f, 5.5f };
     std::set<int> s_dup_int{ 1, 1, 1, 2, 3, 3, 4, 5, 0, 0 };
@@ -33,7 +33,7 @@ TEST_CASE("set_numbers", "[set_numbers]")
 
 TEST_CASE("set_string", "[set_string]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::set<std::string> s_str{ "one", "two", "three", "four" };
     std::stringstream ss1;
     std::stringstream ss2;
@@ -45,7 +45,7 @@ TEST_CASE("set_string", "[set_string]")
 
 TEST_CASE("set_char", "[set_char]")
 {
-    using namespace stlprint;
+    using namespace stringify;
     std::set<char> s_char{ 'a', 'b', 'c', 'd' };
     std::stringstream ss1;
     std::stringstream ss2;
