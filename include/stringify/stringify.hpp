@@ -201,16 +201,28 @@ namespace
 namespace stringify
 {
     template<typename T1, typename T2>
+    std::string to_string(const std::pair<T1, T2>& pr)
+    {
+        return printElementsTup(std::make_tuple(pr.first, pr.second), "pair");
+    }
+
+    template<typename... Types>
+    std::string to_string(const std::tuple<Types...>& tup)
+    {
+        return printElementsTup(tup, "tuple");
+    }
+
+    template<typename T1, typename T2>
     std::ostream& operator<<(std::ostream& xx, const std::pair<T1, T2>& pr)
     {
-        xx << printElementsTup(std::make_tuple(pr.first, pr.second), "pair");
+        xx << to_string(pr);
         return xx;
     }
 
     template<typename... Types>
     std::ostream& operator<<(std::ostream& xx, const std::tuple<Types...>& tup)
     {
-        xx << printElementsTup(tup, "tuple");
+        xx << to_string(tup);
         return xx;
     }
 
@@ -218,9 +230,15 @@ namespace stringify
 #if defined(_GLIBCXX_VECTOR) || defined(_LIBCPP_VECTOR) || defined(_VECTOR_)
 
     template<typename T, typename _Alloc>
+    std::string to_string(const std::vector<T, _Alloc>& ar)
+    {
+        return printElementsCont(ar, "vector", ar.size());
+    }
+
+    template<typename T, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::vector<T, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "vector", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 
@@ -374,16 +392,28 @@ namespace stringify
     // for std::set<> & std::multiset<>
 #if defined(_GLIBCXX_SET) || defined(_LIBCPP_SET) || defined(_SET_)
     template<typename T, typename _Pr, typename _Alloc>
+    std::string to_string(const std::set<T, _Pr, _Alloc>& ar)
+    {
+        return printElementsCont(ar, "set", ar.size());
+    }
+
+    template<typename T, typename _Pr, typename _Alloc>
+    std::string to_string(const std::multiset<T, _Pr, _Alloc>& ar)
+    {
+        return printElementsCont(ar, "multiset", ar.size());
+    }
+
+    template<typename T, typename _Pr, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::set<T, _Pr, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "set", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 
     template<typename T, typename _Pr, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::multiset<T, _Pr, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "multiset", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 #endif
@@ -424,77 +454,83 @@ namespace stringify
 
     // for std::shared_ptr<> and std::unique_ptr<>
 #if defined(_GLIBCXX_MEMORY) || defined(_LIBCPP_MEMORY) || defined(_MEMORY_)
+
     template<typename T>
-    std::ostream& operator<<(std::ostream& xx, const std::shared_ptr<T>& sp)
+    std::string to_string(const std::shared_ptr<T>& sp)
     {
+        std::stringstream ss;
         if (sp)
         {
-            xx << printElementsPtr(sp, "shared_ptr");
-            xx << delimiter;
-            xx << "ref_cnt=" << sp.use_count();
+            ss << printElementsPtr(sp, "shared_ptr");
+            ss << delimiter;
+            ss << "ref_cnt=" << sp.use_count();
         }
         else
         {
-            xx << get_name("shared_ptr");
-            xx << get_begin_brace("shared_ptr");
-            xx << "nullptr";
+            ss << get_name("shared_ptr");
+            ss << get_begin_brace("shared_ptr");
+            ss << "nullptr";
         }
+        return ss.str();
+    }
+
+    template<typename T>
+    std::string to_string(const std::unique_ptr<T>& up)
+    {
+        std::stringstream ss;
+        // TODO: handle nullptr
+        if (up)
+        {
+            ss << printElementsPtr(up, "unique_ptr");
+        }
+        else
+        {
+            ss << get_name("unique_ptr");
+            ss << get_begin_brace("unique_ptr");
+            ss << "nullptr";
+        }
+        return ss.str();
+    }
+
+    template<typename T>
+    std::string to_string(const std::weak_ptr<T>& wp)
+    {
+        std::stringstream ss;
+        if (auto sp = wp.lock())
+        {
+            ss << printElementsPtr(sp, "weak_ptr");
+        }
+        else
+        {
+            // TODO: no idea how to hanlde
+            ss << get_name("weak_ptr");
+            ss << get_begin_brace("weak_ptr");
+            ss << "nullptr";
+        }
+        return ss.str();
+    }
+
+    template<typename T>
+    std::ostream& operator<<(std::ostream& xx, const std::shared_ptr<T>& sp)
+    {
+        xx << to_string(sp);
         return xx;
     }
 
     template<typename T>
     std::ostream& operator<<(std::ostream& xx, const std::unique_ptr<T>& up)
     {
-        // TODO: handle nullptr
-        if (up)
-        {
-            xx << printElementsPtr(up, "unique_ptr");
-        }
-        else
-        {
-            xx << get_name("unique_ptr");
-            xx << get_begin_brace("unique_ptr");
-            xx << "nullptr";
-
-        }
+        xx << to_string(up);
         return xx;
     }
 
     template<typename T>
     std::ostream& operator<<(std::ostream& xx, const std::weak_ptr<T>& wp)
     {
-        if (auto sp = wp.lock())
-        {
-            xx << printElementsPtr(sp, "weak_ptr");
-        }
-        else
-        {
-            // TODO: no idea how to hanlde
-            xx << get_name("weak_ptr");
-            xx << get_begin_brace("weak_ptr");
-            xx << "nullptr";
-        }
+        xx << to_string(wp);
         return xx;
     }
-#endif
 
-    template<typename T>
-    void print_ptr(const T* ar, size_t N)
-    {
-        std::stringstream ss;
-        ss << "ptr[" << N << "][";
-        for (size_t i = 0; i < N; ++i)
-        {
-            ss <<
-#ifdef SHOW_ADDR
-                &ar[i]
-#else
-                ar[i]
 #endif
-                << ", ";
-        }
-        ss << "\b\b]";
-        return ss.str();
-    }
 }
 
