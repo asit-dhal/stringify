@@ -62,6 +62,8 @@ namespace
         { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
         { "valarray", std::make_pair("valarr", CURLY_BRACES) },
         { "forward_list", std::make_pair("flst", BOX_BRACES) },
+        { "stack", std::make_pair("st", BOX_BRACES) },
+        { "queue", std::make_pair("qu", BOX_BRACES) },
 
         { "iterator", std::make_pair("itr", PTR_BRACES) },
         { "const_iterator", std::make_pair("citr", PTR_BRACES) },
@@ -171,6 +173,39 @@ namespace
             
             using namespace stringify;
             ss << to_string(x);
+            //ss << x;
+
+        }
+        ss << get_end_brace(_name);
+        return ss.str();
+    }
+
+    template<typename T>
+    std::string reversePrintElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    {
+        std::stringstream ss;
+        ss << get_name(_name);
+        if (N != INVALID_SIZE_T)
+        {
+            ss << N;
+        }
+
+        ss << get_begin_brace(_name);
+
+        auto firstFlag = true;
+        for(auto it = ar.rbegin(); it != ar.rend(); it++)
+        {
+            if (firstFlag)
+            {
+                firstFlag = false;
+            }
+            else
+            {
+                ss << delimiter;
+            }
+
+            using namespace stringify;
+            ss << to_string(*it);
             //ss << x;
 
         }
@@ -382,9 +417,15 @@ namespace stringify
     // for std::forward_list<>
 #if defined(_GLIBCXX_FORWARD_LIST) || defined(_LIBCPP_FORWARD_LIST) || defined(_FORWARD_LIST_)
     template<typename T, typename _Alloc>
+    std::string to_string(const std::forward_list<T, _Alloc>& ar)
+    {
+        return printElementsCont(ar, "forward_list", INVALID_SIZE_T);
+    }
+
+    template<typename T, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::forward_list<T, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "forward_list", INVALID_SIZE_T);
+        xx << to_string(ar);
         return xx;
     }
 #endif
@@ -467,6 +508,32 @@ namespace stringify
         xx << printElementsCont(ar, "unordered_multimap", ar.size());
         return xx;
     }
+#endif
+
+    // for std::stack<>
+#if defined(_GLIBCXX_STACK) || defined(_LIBCPP_STACK) || defined(_STACK_)
+
+    template<typename T>
+    std::string to_string(const std::stack<T> &ar)
+    {
+        std::vector<T> vt;
+        auto ar_clone = ar;
+        vt.reserve(ar_clone.size());
+        while (!ar_clone.empty())
+        {
+            vt.push_back(ar_clone.top());
+            ar_clone.pop();
+        }
+        return reversePrintElementsCont(vt, "stack", vt.size());
+    }
+
+    template<typename T>
+    std::ostream& operator<<(std::ostream& xx, const std::stack<T>& ar)
+    {
+        xx << to_string(ar);
+        return xx;
+    }
+
 #endif
 
     // for std::shared_ptr<> and std::unique_ptr<>
