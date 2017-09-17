@@ -536,6 +536,32 @@ namespace stringify
 
 #endif
 
+    // for std::queue<>
+#if defined(_GLIBCXX_QUEUE) || defined(_LIBCPP_QUEUE) || defined(_QUEUE_)
+
+    template<typename T>
+    std::string to_string(const std::queue<T> &ar)
+    {
+        std::vector<T> vt;
+        auto ar_clone = ar;
+        vt.reserve(ar_clone.size());
+        while (!ar_clone.empty())
+        {
+            vt.push_back(ar_clone.front());
+            ar_clone.pop();
+        }
+        return printElementsCont(vt, "queue", vt.size());
+    }
+
+    template<typename T>
+    std::ostream& operator<<(std::ostream& xx, const std::queue<T>& ar)
+    {
+        xx << to_string(ar);
+        return xx;
+    }
+
+#endif
+
     // for std::shared_ptr<> and std::unique_ptr<>
 #if defined(_GLIBCXX_MEMORY) || defined(_LIBCPP_MEMORY) || defined(_MEMORY_)
 
