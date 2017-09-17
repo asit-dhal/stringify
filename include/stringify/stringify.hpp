@@ -254,6 +254,23 @@ namespace stringify
 
 #endif
 
+#if defined(_GLIBCXX_ARRAY) || defined(_LIBCPP_ARRAY_) || defined(_ARRAY_)
+
+    template<typename T, std::size_t _N>
+    std::string to_string(const std::array<T, _N>& ar)
+    {
+        return printElementsCont(ar, "array", _N);
+    }
+
+    template<typename T, std::size_t _N>
+    std::ostream& operator<<(std::ostream& xx, const std::array<T, _N>& ar)
+    {
+        xx << to_string(ar);
+        return xx;
+    }
+
+#endif
+
 // for std::valarray<>
 #if defined(_GLIBCXX_VALARRAY) || defined(_LIBCPP_VALARRAY) || defined(_VALARRAY_)
 
@@ -351,16 +368,6 @@ namespace stringify
         }
         return xx;
     }
-
-    // for std::array<>
-#if defined(_GLIBCXX_ARRAY) || defined(_LIBCPP_ARRAY) || defined(_ARRAY_)
-    template<typename T, size_t N>
-    std::ostream& operator<<(std::ostream& xx, const std::array<T, N>& ar)
-    {
-        xx << printElementsCont(ar, "array", N);
-        return xx;
-    }
-#endif
 
     // for std::list<>
 #if defined(_GLIBCXX_LIST) || defined(_LIBCPP_LIST) || defined(_LIST_)
