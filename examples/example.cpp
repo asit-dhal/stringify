@@ -10,6 +10,7 @@
 #include <memory>
 #include <utility>
 #include <tuple>
+#include <map>
 
 #include "stringify\stringify.hpp"
 
@@ -82,9 +83,23 @@ void tupleExample()
     //std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
 }
 
+void mapExample()
+{
+    std::map<int, int> mp1;
+    mp1[1] = 10;
+    mp1[2] = 30;
+    mp1[3] = 50;
+    mp1[4] = 70;
+    std::map<double, int> mp2;
+    std::cout << "map<int, int>: " << mp1 << std::endl;
+    //auto tp = std::make_tuple<int, std::string, char*, float>(200, "two hundred", "make string", 2.3f);
+    //std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
+}
+
 int main()
 {
     containerExample();
     pointerExample();
     tupleExample();
+    mapExample();
 }

@@ -9,6 +9,15 @@
 #include <ostream>
 #include <limits>
 
+namespace stringify
+{
+    template<typename T1, typename T2>
+    std::string to_string(const std::pair<T1, T2>& pr);
+
+    template<typename T1, typename T2>
+    std::ostream& operator<<(std::ostream& xx, const std::pair<T1, T2>& pr);
+}
+
 namespace
 {
     constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
@@ -151,7 +160,6 @@ namespace
         auto firstFlag = true;
         for (const auto& x : ar)
         {
-            using TT = typename std::remove_const_t<std::remove_reference_t<decltype(x)>>;
             if (firstFlag)
             {
                 firstFlag = false;
@@ -161,7 +169,9 @@ namespace
                 ss << delimiter;
             }
             
+            using namespace stringify;
             ss << to_string(x);
+            //ss << x;
 
         }
         ss << get_end_brace(_name);
