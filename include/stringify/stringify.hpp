@@ -173,7 +173,6 @@ namespace
             
             using namespace stringify;
             ss << to_string(x);
-            //ss << x;
 
         }
         ss << get_end_brace(_name);
@@ -206,7 +205,6 @@ namespace
 
             using namespace stringify;
             ss << to_string(*it);
-            //ss << x;
 
         }
         ss << get_end_brace(_name);
@@ -306,7 +304,6 @@ namespace stringify
 
 #endif
 
-// for std::valarray<>
 #if defined(_GLIBCXX_VALARRAY) || defined(_LIBCPP_VALARRAY) || defined(_VALARRAY_)
 
     template<typename T>
@@ -326,7 +323,6 @@ namespace stringify
 
 #endif
 
-    // for std::deque<>
 #if defined(_GLIBCXX_DEQUE) || defined(_LIBCPP_DEQUE) || defined(_DEQUE_)
 
     template<typename T, typename _Alloc>
@@ -361,7 +357,6 @@ namespace stringify
             std::is_same<T, wchar_t const*>::value ||
             std::is_same<T, wchar_t*>::value ||
             std::is_same<T, char*>::value), std::ostream&>
-        //std::ostream&
 #endif
         operator<<(std::ostream& xx, const T& it)
     {
@@ -404,17 +399,21 @@ namespace stringify
         return xx;
     }
 
-    // for std::list<>
 #if defined(_GLIBCXX_LIST) || defined(_LIBCPP_LIST) || defined(_LIST_)
+    template<typename T, typename _Alloc>
+    std::string to_string(const std::list<T, _Alloc>& ar)
+    {
+        return printElementsCont(ar, "list", ar.size());
+    }
+
     template<typename T, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::list<T, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "list", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 #endif
 
-    // for std::forward_list<>
 #if defined(_GLIBCXX_FORWARD_LIST) || defined(_LIBCPP_FORWARD_LIST) || defined(_FORWARD_LIST_)
     template<typename T, typename _Alloc>
     std::string to_string(const std::forward_list<T, _Alloc>& ar)
