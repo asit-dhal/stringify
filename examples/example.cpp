@@ -79,8 +79,8 @@ void tupleExample()
 {
     auto pr = std::make_pair<int, std::string>(200, "two hundred");
     std::cout << "pair<int, std::string>: " << pr << std::endl;
-    //auto tp = std::make_tuple<int, std::string, char*, float>(200, "two hundred", "make string", 2.3f);
-    //std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
+    auto tp = std::make_tuple(200, "two hundred", "make string", 2.3f);
+    std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
 }
 
 void mapExample()
@@ -92,8 +92,6 @@ void mapExample()
     mp1[4] = 70;
     std::map<double, int> mp2;
     std::cout << "map<int, int>: " << mp1 << std::endl;
-    //auto tp = std::make_tuple<int, std::string, char*, float>(200, "two hundred", "make string", 2.3f);
-    //std::cout << "tuple<int, std::string, char*, float>: " << tp << std::endl;
 }
 
 int main()
