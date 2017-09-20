@@ -21,7 +21,7 @@ namespace stringify
 namespace
 {
     constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
-    const std::string delimiter = ", ";
+    constexpr char* delimiter = ", ";
     enum
     {
         LEFT,
@@ -234,7 +234,7 @@ namespace
         }
         ss << get_begin_brace(_name);
         auto tupleStr = TuplePrinter<SZ>::print(tup);
-        ss << tupleStr.substr(0, tupleStr.size() - delimiter.size());
+        ss << tupleStr.substr(0, tupleStr.size() - std::strlen(delimiter));
         ss << get_end_brace(_name);
         return ss.str();
     }
