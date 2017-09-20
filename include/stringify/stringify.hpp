@@ -8,6 +8,76 @@
 #include <tuple>
 #include <ostream>
 #include <limits>
+#include <algorithm>
+
+namespace stdnext {
+
+    template< typename InputIterT1, typename InputIterT2 >
+    constexpr bool equal(InputIterT1 first1, InputIterT1 last1, InputIterT2 first2, InputIterT2 last2)
+    {
+        for (; first1 != last1 && first2 != last2; ++first1, ++first2)
+        {
+            if (!(*first1 == *first2))
+                return false;
+        }
+        return first1 == last1 && first2 == last2;
+    }
+
+    template< typename InputIterT, typename UnaryPredicateT >
+    constexpr InputIterT find_if(InputIterT first, InputIterT last, const UnaryPredicateT& unaryPredicate)
+    {
+        for (; first != last; ++first)
+        {
+            if (unaryPredicate(*first))
+                break;
+        }
+        return first;
+    }
+
+    constexpr std::size_t constexpr_strlen(const char* s) {
+        std::size_t length = 0;
+        while (*s++ != 0)
+            ++length;
+        return length;
+    }
+
+    class string_view {
+    public:
+
+        constexpr string_view() : m_data(nullptr), m_length(0) {
+        }
+
+        constexpr string_view(const char* s) : m_data(s), m_length(constexpr_strlen(s)) {
+        }
+
+        string_view(const std::string& s) : m_data(s.c_str()), m_length(s.length()) {
+        }
+
+		constexpr const char* c_str() const { return m_data; }
+        constexpr std::size_t length() const { return m_length; }
+        constexpr std::size_t size() const { return m_length; }
+        constexpr const char* begin() const { return m_data; }
+        constexpr const char* end() const { return m_data+m_length; }
+
+    private:
+        const char* m_data {};
+        std::size_t m_length {};
+    };
+
+    constexpr bool operator==(const string_view& s1, const string_view& s2) {
+        return equal(s1.begin(), s1.end(), s2.begin(), s2.end());
+    }
+
+    constexpr bool operator!=(const string_view& s1, const string_view& s2) {
+        return !operator==(s1, s2);
+    }
+
+    inline std::ostream& operator<<(std::ostream& bos, const string_view& s) {
+        for (const auto& c : s)
+            bos << c;
+        return bos;
+    }
+}
 
 namespace stringify
 {
@@ -21,7 +91,7 @@ namespace stringify
 namespace
 {
     constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
-    const std::string delimiter = ", ";
+    constexpr stdnext::string_view delimiter = ", ";
     enum
     {
         LEFT,
@@ -34,52 +104,126 @@ namespace
         BRACE_TYPE
     };
 
-    using brace_type = std::pair<std::string, std::string>;
-    brace_type const CURLY_BRACES   = std::make_pair("{", "}");
-    brace_type const ANGULAR_BRACES = std::make_pair("<", ">");
-    brace_type const BOX_BRACES     = std::make_pair("[", "]");
-    brace_type const PARA_BRACES    = std::make_pair("(", ")");
-    brace_type const PTR_BRACES     = std::make_pair("->", "");
-    brace_type const NO_BRACES      = std::make_pair("", "");
+    namespace v1 {
+        using brace_type = std::pair<std::string, std::string>;
+        brace_type const CURLY_BRACES = std::make_pair("{", "}");
+        brace_type const ANGULAR_BRACES = std::make_pair("<", ">");
+        brace_type const BOX_BRACES = std::make_pair("[", "]");
+        brace_type const PARA_BRACES = std::make_pair("(", ")");
+        brace_type const PTR_BRACES = std::make_pair("->", "");
+        brace_type const NO_BRACES = std::make_pair("", "");
 
+        std::unordered_map<std::string, std::pair<std::string, brace_type>> Names =
+        {
+            { "carray", std::make_pair("carr", BOX_BRACES) },
+            { "array", std::make_pair("arr", BOX_BRACES) },
+            { "vector", std::make_pair("vec", BOX_BRACES) },
+            { "deque", std::make_pair("deq", BOX_BRACES) },
+            { "list", std::make_pair("lst", BOX_BRACES) },
+            { "tuple", std::make_pair("tp", PARA_BRACES) },
+            { "pair", std::make_pair("pr", PARA_BRACES) },
+            { "map", std::make_pair("map", CURLY_BRACES) },
+            { "multimap", std::make_pair("mmap", CURLY_BRACES) },
+            { "set", std::make_pair("set", PARA_BRACES) },
+            { "multiset", std::make_pair("mset", PARA_BRACES) },
+            { "unordered_map", std::make_pair("umap", PARA_BRACES) },
+            { "unordered_multimap", std::make_pair("ummap", CURLY_BRACES) },
+            { "unordered_multiset", std::make_pair("umset", CURLY_BRACES) },
+            { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
+            { "valarray", std::make_pair("valarr", CURLY_BRACES) },
+            { "forward_list", std::make_pair("flst", BOX_BRACES) },
+            { "stack", std::make_pair("st", BOX_BRACES) },
+            { "queue", std::make_pair("qu", BOX_BRACES) },
 
-    std::unordered_map<std::string, std::pair<std::string, brace_type>> Names =
-    {
-        { "carray", std::make_pair("carr", BOX_BRACES) },
-        { "array", std::make_pair("arr", BOX_BRACES) },
-        { "vector", std::make_pair("vec", BOX_BRACES) },
-        { "deque", std::make_pair("deq", BOX_BRACES) },
-        { "list", std::make_pair("lst", BOX_BRACES) },
-        { "tuple", std::make_pair("tp", PARA_BRACES) },
-        { "pair", std::make_pair("pr", PARA_BRACES) },
-        { "map", std::make_pair("map", CURLY_BRACES) },
-        { "multimap", std::make_pair("mmap", CURLY_BRACES) },
-        { "set", std::make_pair("set", PARA_BRACES) },
-        { "multiset", std::make_pair("mset", PARA_BRACES) },
-        { "unordered_map", std::make_pair("umap", PARA_BRACES) },
-        { "unordered_multimap", std::make_pair("ummap", CURLY_BRACES) },
-        { "unordered_multiset", std::make_pair("umset", CURLY_BRACES) },
-        { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
-        { "valarray", std::make_pair("valarr", CURLY_BRACES) },
-        { "forward_list", std::make_pair("flst", BOX_BRACES) },
-        { "stack", std::make_pair("st", BOX_BRACES) },
-        { "queue", std::make_pair("qu", BOX_BRACES) },
+            { "iterator", std::make_pair("itr", PTR_BRACES) },
+            { "const_iterator", std::make_pair("citr", PTR_BRACES) },
+            { "reverse_iterator", std::make_pair("ritr", PTR_BRACES) },
+            { "const_reverse_iterator", std::make_pair("critr" , PTR_BRACES) },
 
-        { "iterator", std::make_pair("itr", PTR_BRACES) },
-        { "const_iterator", std::make_pair("citr", PTR_BRACES) },
-        { "reverse_iterator", std::make_pair("ritr", PTR_BRACES) },
-        { "const_reverse_iterator", std::make_pair("critr" , PTR_BRACES) },
+            { "pointer", std::make_pair("ptr", PTR_BRACES) },
+            { "const_pointer", std::make_pair("cptr", PTR_BRACES) },
+            { "shared_ptr", std::make_pair("sp", PTR_BRACES) },
+            { "unique_ptr", std::make_pair("up", PTR_BRACES) },
+            { "weak_ptr", std::make_pair("wp", PTR_BRACES) },
+        };
 
-        { "pointer", std::make_pair("ptr", PTR_BRACES) },
-        { "const_pointer", std::make_pair("cptr", PTR_BRACES) },
-        { "shared_ptr", std::make_pair("sp", PTR_BRACES) },
-        { "unique_ptr", std::make_pair("up", PTR_BRACES) },
-        { "weak_ptr", std::make_pair("wp", PTR_BRACES) },
-    };
+        inline std::string get_name(std::string _name) { return std::get<NAME>(Names[_name]); }
+        inline std::string get_begin_brace(std::string _name) { return std::get<LEFT>(std::get<BRACE_TYPE>(Names[_name])); }
+        inline std::string get_end_brace(std::string _name) { return std::get<RIGHT>(std::get<BRACE_TYPE>(Names[_name])); }
+    } // v1
 
-    inline std::string get_name(std::string _name) { return std::get<NAME>(Names[_name]); }
-    inline std::string get_begin_brace(std::string _name) { return std::get<LEFT>(std::get<BRACE_TYPE>(Names[_name])); }
-    inline std::string get_end_brace(std::string _name) { return std::get<RIGHT>(std::get<BRACE_TYPE>(Names[_name])); }
+    inline namespace v2 {
+        using brace_type = std::pair<stdnext::string_view, stdnext::string_view>;
+        constexpr brace_type const CURLY_BRACES = std::make_pair("{", "}");
+        constexpr brace_type const ANGULAR_BRACES = std::make_pair("<", ">");
+        constexpr brace_type const BOX_BRACES = std::make_pair("[", "]");
+        constexpr brace_type const PARA_BRACES = std::make_pair("(", ")");
+        constexpr brace_type const PTR_BRACES = std::make_pair("->", "");
+        constexpr brace_type const NO_BRACES = std::make_pair("", "");
+
+        using Elem = std::pair<stdnext::string_view, brace_type>;
+        using NameElem = std::pair<stdnext::string_view, Elem>;
+        constexpr NameElem Names[] =
+        {
+            { "carray", std::make_pair("carr", BOX_BRACES) },
+            { "array", std::make_pair("arr", BOX_BRACES) },
+            { "vector", std::make_pair("vec", BOX_BRACES) },
+            { "deque", std::make_pair("deq", BOX_BRACES) },
+            { "list", std::make_pair("lst", BOX_BRACES) },
+            { "tuple", std::make_pair("tp", PARA_BRACES) },
+            { "pair", std::make_pair("pr", PARA_BRACES) },
+            { "map", std::make_pair("map", CURLY_BRACES) },
+            { "multimap", std::make_pair("mmap", CURLY_BRACES) },
+            { "set", std::make_pair("set", PARA_BRACES) },
+            { "multiset", std::make_pair("mset", PARA_BRACES) },
+            { "unordered_map", std::make_pair("umap", PARA_BRACES) },
+            { "unordered_multimap", std::make_pair("ummap", CURLY_BRACES) },
+            { "unordered_multiset", std::make_pair("umset", CURLY_BRACES) },
+            { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
+            { "valarray", std::make_pair("valarr", CURLY_BRACES) },
+            { "forward_list", std::make_pair("flst", BOX_BRACES) },
+            { "stack", std::make_pair("st", BOX_BRACES) },
+            { "queue", std::make_pair("qu", BOX_BRACES) },
+
+            { "iterator", std::make_pair("itr", PTR_BRACES) },
+            { "const_iterator", std::make_pair("citr", PTR_BRACES) },
+            { "reverse_iterator", std::make_pair("ritr", PTR_BRACES) },
+            { "const_reverse_iterator", std::make_pair("critr" , PTR_BRACES) },
+
+            { "pointer", std::make_pair("ptr", PTR_BRACES) },
+            { "const_pointer", std::make_pair("cptr", PTR_BRACES) },
+            { "shared_ptr", std::make_pair("sp", PTR_BRACES) },
+            { "unique_ptr", std::make_pair("up", PTR_BRACES) },
+            { "weak_ptr", std::make_pair("wp", PTR_BRACES) },
+        };
+
+        constexpr inline const Elem& get_elem(stdnext::string_view _name) {
+            static constexpr Elem dummy;
+            using std::begin; using std::end;
+            // TODO: use lower_bound on a pre-sorted array
+            const auto iter = stdnext::find_if(begin(Names), end(Names), [&](const auto& elem) {
+                return elem.first == _name;
+            });
+            if (iter == end(Names))
+                return dummy;
+            return iter->second;
+        }
+
+        constexpr inline stdnext::string_view get_name(stdnext::string_view _name) {
+            const auto& elem = get_elem(_name);
+            return elem.first;
+        }
+
+        constexpr inline stdnext::string_view get_begin_brace(stdnext::string_view _name) {
+            const auto& elem = get_elem(_name);
+            return std::get<LEFT>(std::get<BRACE_TYPE>(elem));
+        }
+
+        constexpr inline stdnext::string_view get_end_brace(stdnext::string_view _name) {
+            const auto& elem = get_elem(_name);
+            return std::get<RIGHT>(std::get<BRACE_TYPE>(elem));
+        }
+    } // v2
 
     // string type traits
     template<class T> struct is_str : std::false_type {};
@@ -148,7 +292,7 @@ namespace
     };
 
     template<typename T>
-    std::string printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    std::string printElementsCont(const T& ar, const stdnext::string_view& _name, std::size_t N)
     {
         std::stringstream ss;
         ss << get_name(_name);
@@ -158,7 +302,7 @@ namespace
         }
 
         ss << get_begin_brace(_name);
-        
+
         auto firstFlag = true;
         for (const auto& x : ar)
         {
@@ -170,7 +314,7 @@ namespace
             {
                 ss << delimiter;
             }
-            
+
             using namespace stringify;
             ss << to_string(x);
 
@@ -180,7 +324,7 @@ namespace
     }
 
     template<typename T>
-    std::string reversePrintElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    std::string reversePrintElementsCont(const T& ar, const stdnext::string_view& _name, std::size_t N)
     {
         std::stringstream ss;
         ss << get_name(_name);
@@ -212,7 +356,7 @@ namespace
     }
 
     template<typename T>
-    std::string printElementsPtr(const T& ptr, std::string&& _name)
+    std::string printElementsPtr(const T& ptr, const stdnext::string_view&  _name)
     {
         std::stringstream ss;
         ss << get_name(_name);
@@ -222,7 +366,7 @@ namespace
     }
 
     template<typename... TArgs>
-    std::string printElementsTup(const std::tuple<TArgs...>& tup, std::string&& _name)
+    std::string printElementsTup(const std::tuple<TArgs...>& tup, const stdnext::string_view&  _name)
     {
         std::stringstream ss;
         ss << get_name(_name);
