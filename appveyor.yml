@@ -1,0 +1,61 @@
+image: 
+  - Visual Studio 2015
+  #- Visual Studio 2017
+
+init:
+  - date /T & time /T
+  - git config --global core.autocrlf input
+  - cmake --version
+  - del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - ps: >-
+      if ($env:APPVEYOR_REPO_TAG -eq "true")
+      {
+        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
+      }
+      else
+      {
+        Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.substring(0,7))"
+      }
+
+clone_folder: c:\projects\stringify
+
+branches:
+  only:
+  - master
+
+clone_depth: 5
+
+version: '{build}'
+
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Release
+  - Debug
+
+environment:
+  MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
+  matrix:
+    - generator: "Visual Studio 14"    
+    - generator: "Visual Studio 15"
+
+matrix:
+  fast_finish: true
+
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - dir
+  - cd.. 
+  - mkdir build
+  - cd build
+  - >
+    cmake %APPVEYOR_BUILD_FOLDER%
+    -G "%generator%" 
+    -DCMAKE_INSTALL_PREFIX=./stringify
+  - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmake --build . --target INSTALL --config %configuration% -- /nologo
+
+test_script:
+  - ctest -V -j 2 -C %CONFIGURATION%
