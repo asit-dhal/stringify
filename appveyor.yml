@@ -39,7 +39,7 @@ environment:
   MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
   matrix:
     - generator: "Visual Studio 14"    
-    - generator: "Visual Studio 15"
+    #- generator: "Visual Studio 15"
 
 matrix:
   fast_finish: true
