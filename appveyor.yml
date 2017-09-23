@@ -21,7 +21,8 @@ clone_folder: c:\projects\stringify
 
 branches:
   only:
-  - ci-build-script
+  - dev
+  - master
 
 clone_depth: 5
 
