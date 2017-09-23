@@ -1,6 +1,6 @@
 image: 
   - Visual Studio 2015
-  #- Visual Studio 2017
+  - Visual Studio 2017
 
 init:
   - date /T & time /T
@@ -21,7 +21,7 @@ clone_folder: c:\projects\stringify
 
 branches:
   only:
-  - master
+  - ci-build-script
 
 clone_depth: 5
 
@@ -39,10 +39,15 @@ environment:
   MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
   matrix:
     - generator: "Visual Studio 14"    
-    #- generator: "Visual Studio 15"
+    - generator: "Visual Studio 15"
 
 matrix:
-  fast_finish: true
+  exclude: 
+    - image: Visual Studio 2015
+      generator: "Visual Studio 15"
+    - image: Visual Studio 2017
+      generator: "Visual Studio 14"
+  fast_finish: false
 
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
@@ -58,4 +63,4 @@ build_script:
   - cmake --build . --target INSTALL --config %configuration% -- /nologo
 
 test_script:
-  - ctest -V -j 2 -C %CONFIGURATION%
+  - ctest -V -j 2 -C %CONFIGURATION% --output-on-failure
