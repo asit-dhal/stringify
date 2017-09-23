@@ -24,13 +24,13 @@ TEST_CASE("map_numbers", "[map_numbers]")
     std::stringstream ss2;
 
     ss1 << mp1;
-    ss2 << MAP_NAME << mp1.size() << MAP_BEGIN << "pr(1, 10), pr(2, 30), pr(3, 50), pr(4, 70)" << MAP_END;
+	ss2 << MAP_NAME << mp1.size() << MAP_BEGIN << "1:10, 2:30, 3:50, 4:70" << MAP_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << mp2;
-    ss2 << MAP_NAME << mp2.size() << MAP_BEGIN << "pr(1.1, 10), pr(2.3, 30), pr(2.7, 70), pr(9.1, 50)" << MAP_END;
+    ss2 << MAP_NAME << mp2.size() << MAP_BEGIN << "1.1:10, 2.3:30, 2.7:70, 9.1:50" << MAP_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -47,13 +47,13 @@ TEST_CASE("map_string", "[map_string]")
     std::stringstream ss2;
 
     ss1 << mp_str1;
-    ss2 << MAP_NAME << mp_str1.size() << MAP_BEGIN << "pr(\'1\', \"one\"), pr(\'2\', \"two\"), pr(\'3\', \"three\"), pr(\'4\', \"four\")" << MAP_END;
+    ss2 << MAP_NAME << mp_str1.size() << MAP_BEGIN << "\'1\':\"one\", \'2\':\"two\", \'3\':\"three\", \'4\':\"four\"" << MAP_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
 TEST_CASE("map_nested", "[map_nested]")
 {
-    /*using namespace stringify;
+    using namespace stringify;
     std::map<char, std::map<int, std::string>> mp_str1;
     mp_str1['1'].insert(std::make_pair(1, "one"));
     mp_str1['1'].insert(std::make_pair(10, "ten"));
@@ -61,6 +61,8 @@ TEST_CASE("map_nested", "[map_nested]")
     mp_str1['2'].insert(std::make_pair(20, "twenty"));
     mp_str1['3'].insert(std::make_pair(3, "three"));
     mp_str1['3'].insert(std::make_pair(30, "thirty"));
+	mp_str1['3'].insert(std::make_pair(32, "thirty two"));
+	mp_str1['3'].insert(std::make_pair(33, "thirty three"));
     mp_str1['4'].insert(std::make_pair(4, "four"));
     mp_str1['4'].insert(std::make_pair(40, "fourty"));
 
@@ -68,6 +70,11 @@ TEST_CASE("map_nested", "[map_nested]")
     std::stringstream ss2;
 
     ss1 << mp_str1;
-    ss2 << MAP_NAME << mp_str1.size() << MAP_BEGIN << "pr(\'1\', \"one\"), pr(\'2\', \"two\"), pr(\'3\', \"three\"), pr(\'4\', \"four\")" << MAP_END;
-    REQUIRE(ss1.str() == ss2.str());*/
+	ss2 << MAP_NAME << mp_str1.size() << MAP_BEGIN
+		<< "\'1\':" << MAP_NAME << mp_str1['1'].size() << MAP_BEGIN << "1:\"one\", 10:\"ten\"" << MAP_END
+		<< ", \'2\':" << MAP_NAME << mp_str1['2'].size() << MAP_BEGIN << "2:\"two\", 20:\"twenty\"" << MAP_END
+		<< ", \'3\':" << MAP_NAME << mp_str1['3'].size() << MAP_BEGIN << "3:\"three\", 30:\"thirty\", 32:\"thirty two\", 33:\"thirty three\"" << MAP_END
+		<< ", \'4\':" << MAP_NAME << mp_str1['4'].size() << MAP_BEGIN << "4:\"four\", 40:\"fourty\"" << MAP_END
+		<< MAP_END;
+    REQUIRE(ss1.str() == ss2.str());
 }

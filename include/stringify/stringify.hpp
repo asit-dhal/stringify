@@ -95,6 +95,18 @@ namespace
     template<> struct is_char<char> : std::true_type {};
     template<> struct is_char<wchar_t> : std::true_type {};
 
+	// stl container type traits
+	template <typename... Args>
+	struct is_map_type { static const bool value = false; };
+
+#if defined(_GLIBCXX_MAP) || defined(_LIBCPP_MAP) || defined(_MAP_)
+	template <typename... Args>
+	struct is_map_type<std::map<Args...>> { static const bool value = true; };
+	template <typename... Args>
+	struct is_map_type<std::multimap<Args...>> { static const bool value = true; };
+#endif
+
+
     template<typename T>
     std::enable_if_t<is_str<T>::value, std::string>
         to_string(const T& val)
@@ -145,8 +157,10 @@ namespace
         }
     };
 
+
     template<typename T>
-    std::string printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+	std::enable_if_t<!is_map_type<T>::value, std::string> 
+		printElementsCont(const T& ar, std::string&& _name, std::size_t N)
     {
         std::stringstream ss;
         ss << get_name(_name);
@@ -169,13 +183,48 @@ namespace
                 ss << delimiter;
             }
             
-            using namespace stringify;
+			using namespace stringify;
             ss << to_string(x);
 
         }
         ss << get_end_brace(_name);
         return ss.str();
     }
+
+	template<typename T1, typename T2>
+	std::string to_map_string(const std::pair<T1, T2>& pr)
+	{
+		using namespace stringify;
+		std::stringstream ss;
+		ss << to_string(pr.first) << ":" << to_string(pr.second);
+		return ss.str();
+	}
+
+	template<typename T>
+	std::enable_if_t<is_map_type<T>::value, std::string>
+		printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+	{
+		std::stringstream ss;
+		ss << get_name(_name);
+		ss << N;
+		ss << get_begin_brace(_name);
+		auto firstFlag = true;
+		for (const auto& x : ar)
+		{
+			if (firstFlag)
+			{
+				firstFlag = false;
+			}
+			else
+			{
+				ss << delimiter;
+			}
+			ss << to_map_string(x);
+
+		}
+		ss << get_end_brace(_name);
+		return ss.str();
+	}
 
     template<typename T>
     std::string reversePrintElementsCont(const T& ar, std::string&& _name, std::size_t N)
@@ -240,7 +289,7 @@ namespace
 }
 
 namespace stringify
-{
+{	
     template<typename T1, typename T2>
     std::string to_string(const std::pair<T1, T2>& pr)
     {
@@ -475,34 +524,58 @@ namespace stringify
 
     // for std::map<> & std::multimap<>
 #if defined(_GLIBCXX_MAP) || defined(_LIBCPP_MAP) || defined(_MAP_)
+	template<typename T1, typename T2, typename _Pr, typename _Alloc>
+	std::string to_string(const std::map<T1, T2, _Pr, _Alloc>& ar)
+	{
+		return printElementsCont(ar, "map", ar.size());
+	}
+
+	template<typename T1, typename T2, typename _Pr, typename _Alloc>
+	std::string to_string(const std::multimap<T1, T2, _Pr, _Alloc>& ar)
+	{
+		return printElementsCont(ar, "multimap", ar.size());
+	}
+
     template<typename T1, typename T2, typename _Pr, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::map<T1, T2, _Pr, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "map", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 
     template<typename T1, typename T2, typename _Pr, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::multimap<T1, T2, _Pr, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "multimap", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 #endif
 
     // for std::unordered_map<> & std::unordered_multimap<>
 #if defined(_GLIBCXX_UNORDERED_MAP) || defined(_LIBCPP_UNORDERED_MAP) || defined(_UNORDERED_MAP_)
+	template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
+	std::string to_string(const std::unordered_map<T1, T2, _Hasher, _Key, _Alloc>& ar)
+	{
+		return printElementsCont(ar, "unordered_map", ar.size());
+	}
+
+	template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
+	std::string to_string(const std::unordered_multimap<T1, T2, _Hasher, _Key, _Alloc>& ar)
+	{
+		return printElementsCont(ar, "unordered_multimap", ar.size());
+	}
+
     template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::unordered_map<T1, T2, _Hasher, _Key, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "unordered_map", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 
     template<typename T1, typename T2, typename _Hasher,typename _Key, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::unordered_multimap<T1, T2, _Hasher, _Key, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "unordered_multimap", ar.size());
+        xx << to_string(ar);
         return xx;
     }
 #endif
