@@ -1,8 +1,12 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/tlptg967c60jsp11/branch/master?svg=true)](https://ci.appveyor.com/project/asit-dhal/stringify/branch/master)
-
 ### stringify :- pretty print stl containers
 - based on https://github.com/mnciitbhu/printers
 - can print all stl containers to output stream
+
+### Build Status
+| Build  | Status |
+|------- | -------- |
+| AppVeyor | [![Build status](https://ci.appveyor.com/api/projects/status/tlptg967c60jsp11/branch/master?svg=true)](https://ci.appveyor.com/project/asit-dhal/stringify/branch/master) |
+| Travis | [![Build Status](https://travis-ci.org/asit-dhal/stringify.svg?branch=master)](https://travis-ci.org/asit-dhal/stringify) |
 
 ### install
 copy include to your source tree
