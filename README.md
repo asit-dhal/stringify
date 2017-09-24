@@ -46,6 +46,17 @@ std::vector<int> v1;
     std::cout << "vector<int>: " << stringify::to_string(v1) << std::endl;
 ```
 
+### Print Format
+| container | format | example |
+| --------- | ------ | ------- |
+| ```std::string, const char*```| within double quote | "dummy" |
+| ```char, wchar_t``` | within single quote | 'a' |
+| ```std::array<int, N>``` | arr_len_[ comma separated values] | arr5[1, 2, 3, 4, 5]|
+| ```int []``` |   carr_len_[ comma separated values] | carr5[1, 2, 3, 4, 5] |
+| ```std::deque<int>``` | deq_len_ [comma separated values] | deq5[1, 2, 3, 4, 5]|
+| ```std::forward_list<int>``` | flst_len_[comma separated values] | flst5[1, 2, 3, 4, 5] |
+
+
 ### Example
 ```cpp
 #include <vector>
