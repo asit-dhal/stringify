@@ -12,7 +12,7 @@
 #include <tuple>
 #include <map>
 
-#include "stringify\stringify.hpp"
+#include "stringify/stringify.hpp"
 
 using namespace stringify;
 
