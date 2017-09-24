@@ -56,7 +56,7 @@ namespace
         { "multimap", std::make_pair("mmap", CURLY_BRACES) },
         { "set", std::make_pair("set", PARA_BRACES) },
         { "multiset", std::make_pair("mset", PARA_BRACES) },
-        { "unordered_map", std::make_pair("umap", PARA_BRACES) },
+        { "unordered_map", std::make_pair("umap", CURLY_BRACES) },
         { "unordered_multimap", std::make_pair("ummap", CURLY_BRACES) },
         { "unordered_multiset", std::make_pair("umset", CURLY_BRACES) },
         { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
@@ -104,6 +104,13 @@ namespace
 	struct is_map_type<std::map<Args...>> { static const bool value = true; };
 	template <typename... Args>
 	struct is_map_type<std::multimap<Args...>> { static const bool value = true; };
+#endif
+
+#if defined(_GLIBCXX_UNORDERED_MAP) || defined(_LIBCPP_UNORDERED_MAP) || defined(_UNORDERED_MAP_)
+	template <typename... Args>
+	struct is_map_type<std::unordered_map<Args...>> { static const bool value = true; };
+	template <typename... Args>
+	struct is_map_type<std::unordered_multimap<Args...>> { static const bool value = true; };
 #endif
 
 
