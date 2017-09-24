@@ -8,6 +8,7 @@
 #include <tuple>
 #include <ostream>
 #include <limits>
+#include <cstring>
 
 namespace stringify
 {
@@ -21,7 +22,7 @@ namespace stringify
 namespace
 {
     constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
-    constexpr char* delimiter = ", ";
+    constexpr const char* delimiter = ", ";
     enum
     {
         LEFT,
@@ -87,8 +88,12 @@ namespace
     template<> struct is_str<wchar_t*> : std::true_type {};
     template<> struct is_str<const char*> : std::true_type {};
     template<> struct is_str<const wchar_t*> : std::true_type {};
-    template<typename C, typename T, typename A>
-    struct is_str<std::basic_string<C, T, A>> : std::true_type {};
+	template<> struct is_str<std::string> : std::true_type {};
+	template<> struct is_str<const std::string> : std::true_type {};
+	template<> struct is_str<std::wstring> : std::true_type {};
+	template<> struct is_str<const std::wstring> : std::true_type {};
+    /*template<typename C, typename T, typename A>
+    struct is_str<std::basic_string<C, T, A>> : std::true_type {};*/
 
     // char type traits
     template<class T> struct is_char : std::false_type {};
