@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/tlptg967c60jsp11/branch/master?svg=true)](https://ci.appveyor.com/project/asit-dhal/stringify/branch/master)
+
 ### stringify :- pretty print stl containers
 - based on https://github.com/mnciitbhu/printers
 - can print all stl containers to output stream
