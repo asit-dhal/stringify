@@ -83,17 +83,13 @@ namespace
     inline std::string get_end_brace(std::string _name) { return std::get<RIGHT>(std::get<BRACE_TYPE>(Names[_name])); }
 
     // string type traits
-    template<class T> struct is_str : std::false_type {};
-    template<> struct is_str<char*> : std::true_type {};
-    template<> struct is_str<wchar_t*> : std::true_type {};
-    template<> struct is_str<const char*> : std::true_type {};
-    template<> struct is_str<const wchar_t*> : std::true_type {};
-	template<> struct is_str<std::string> : std::true_type {};
-	template<> struct is_str<const std::string> : std::true_type {};
-	template<> struct is_str<std::wstring> : std::true_type {};
-	template<> struct is_str<const std::wstring> : std::true_type {};
-    /*template<typename C, typename T, typename A>
-    struct is_str<std::basic_string<C, T, A>> : std::true_type {};*/
+	template<class T> struct is_str : std::false_type {};
+	template<> struct is_str<char*> : std::true_type {};
+	template<> struct is_str<wchar_t*> : std::true_type {};
+	template<> struct is_str<const char*> : std::true_type {};
+	template<> struct is_str<const wchar_t*> : std::true_type {};
+	template<typename C, typename T, typename A>
+	struct is_str<std::basic_string<C, T, A>> : std::true_type {};
 
     // char type traits
     template<class T> struct is_char : std::false_type {};

@@ -3,6 +3,15 @@ language: generic
 dist: trusty
 sudo: required
 
+env:
+  global:
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+    - CMAKE_VERSION="3.9.1"
+
+cache:
+  directories:
+    - ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+
 matrix:
     include:
     - os: linux
@@ -35,15 +44,15 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
 
-    - os: linux
-      compiler: clang
-      env: CLANG_VERSION=5.0 LIBCXX=On
-        - CC=clang-5.0
-        - CXX=clang++-5.0
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0', 'g++-6']
+    #- os: linux
+    #  compiler: clang
+    #  env: CLANG_VERSION=5.0 LIBCXX=On
+    #    - CC=clang-5.0
+    #    - CXX=clang++-5.0
+    #  addons:
+    #    apt:
+    #      sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+    #      packages: ['clang-5.0', 'g++-6']
 
     - os: linux
       compiler: clang
@@ -76,25 +85,36 @@ matrix:
           packages: ['clang-3.8', 'g++-6']
 
 before_install:
+  - export CHECKOUT_PATH=`pwd`;
   - |
-    if [ -n "$GCC_VERSION" ]; then
-      export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"
+    if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      if [ -z "$(ls -A ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached)" ]; then
+        CMAKE_URL="https://cmake.org/files/v3.9/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
+        mkdir -p ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        touch ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached
+      else
+        echo "Using cached cmake version ${CMAKE_VERSION}."
+      fi
+      export PATH="${DEPS_DIR}/cmake-${CMAKE_VERSION}/bin:${PATH}"
     fi
-    if [ -n "$CLANG_VERSION" ]; then
-      export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"
-    fi
-    if [ "$LIBCXX" == "On" ]; then
-      sudo apt-get purge cmake
-      sudo apt-get install cmake3
-      cmake --version
-      sudo CXX="$CXX" CC="$CC"
-      sudo ./cmake/install_libcxx.sh
-      export CXXFLAGS="-stdlib=libc++"
-    fi
+  - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+  - which $CXX
+  - which $CC
+  - $CXX --version
+  - if [ -n "$CLANG_VERSION" ]; then sudo PATH="${PATH}" CXX="$CXX" CC="$CC" ./install_libcxx.sh; fi
 
 install:
   - mkdir -p build && cd build
-  - cmake .. && make
+  - if [ "$GCC_VERSION" == "5" ]; then CXX_FLAGS="${CXX_FLAGS}"; fi
+  - |
+    if [ "$LIBCXX" == "On" ]; then
+      CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -cxx-isystem /usr/include/c++/v1/ -Wno-unused-command-line-argument"
+      CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -lc++abi"
+    fi
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
+  - make -j2 VERBOSE=1
 
 script:
   - ctest -V -j 2 -C Release --output-on-failure
