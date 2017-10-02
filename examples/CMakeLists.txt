@@ -24,6 +24,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(stringifyExamples)
 
+set(CMAKE_CXX_STANDARD 14)
+
 if(TARGET stringify)
   # Part of the main project
   add_library(stringify::stringify ALIAS stringify)

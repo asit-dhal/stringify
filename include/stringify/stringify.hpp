@@ -19,8 +19,22 @@ namespace stringify
     std::ostream& operator<<(std::ostream& xx, const std::pair<T1, T2>& pr);
 }
 
+
+#if __cplusplus==201103L
+namespace std
+{
+	template< bool B, class T = void >
+	using enable_if_t = typename enable_if<B, T>::type;
+
+	template< class T >
+	using remove_reference_t = typename remove_reference<T>::type;
+}
+#endif
+
+
 namespace
 {
+
     constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
     constexpr const char* delimiter = ", ";
     enum
