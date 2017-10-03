@@ -92,6 +92,14 @@ void mapExample()
     mp1[4] = 70;
     std::map<double, int> mp2;
     std::cout << "map<int, int>: " << mp1 << std::endl;
+
+	std::multimap<char, std::string> mp_str1;
+	mp_str1.insert(std::pair<char, std::string>('1', "one"));
+	mp_str1.insert(std::pair<char, std::string>('1', "ekk"));
+	mp_str1.insert(std::pair<char, std::string>('2', "two"));
+	mp_str1.insert(std::pair<char, std::string>('3', "three"));
+	mp_str1.insert(std::pair<char, std::string>('4', "four"));
+	std::cout << "multimap<char, std::string>: " << mp_str1 << std::endl;
 }
 
 int main()
