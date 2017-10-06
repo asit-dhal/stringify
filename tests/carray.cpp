@@ -38,7 +38,7 @@ TEST_CASE("carray_string", "[carray_string]")
 TEST_CASE("carray_char", "[carray_char]")
 {
     using namespace stringify;
-    char array_char[5] = { 'a', 'b', 'c', 'd', NULL };
+    char array_char[5] = { 'a', 'b', 'c', 'd', '\0' };
     std::stringstream ss;
     ss << array_char;
     REQUIRE(ss.str() == "abcd");

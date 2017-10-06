@@ -35,7 +35,7 @@ TEST_CASE("fl_string", "[fl_string]")
 {
     using namespace stringify;
     std::forward_list<std::string> fl_str{ "one", "two", "three", "four" };
-    std::forward_list<char*> fl_cstr{ "cone", "ctwo", "cthree", "cfour" };
+    std::forward_list<const char*> fl_cstr{ "cone", "ctwo", "cthree", "cfour" };
     std::stringstream ss1;
     std::stringstream ss2;
 
