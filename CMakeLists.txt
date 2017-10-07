@@ -17,10 +17,12 @@ endif()
 
 add_library(stringify INTERFACE)
 
-option(stringify_BUILD_EXAMPLES "Build examples" ON)
+option(stringify_BUILD_EXAMPLES "Build examples" OFF)
+option(stringify_BUILD_BENCHMARKS "Build Benchmarks" ON)
+
 cmake_dependent_option(stringify_BUILD_TESTING 
-    "Build stringify tests" ON
-    "BUILD_TESTING" ON
+    "Build stringify tests" OFF
+    "BUILD_TESTING" OFF
 )
 
 target_include_directories(
@@ -40,8 +42,10 @@ if(stringify_BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
-### Install ###
-# * https://github.com/forexample/package-example
+if(stringify_BUILD_BENCHMARKS)
+    add_subdirectory(benchmark)
+endif()
+
 set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 set(config_install_dir "lib/cmake/${PROJECT_NAME}")
