@@ -97,35 +97,35 @@ namespace
     inline std::string get_end_brace(std::string _name) { return std::get<RIGHT>(std::get<BRACE_TYPE>(Names[_name])); }
 
     // string type traits
-	template<class T> struct is_str : std::false_type {};
-	template<> struct is_str<char*> : std::true_type {};
-	template<> struct is_str<wchar_t*> : std::true_type {};
-	template<> struct is_str<const char*> : std::true_type {};
-	template<> struct is_str<const wchar_t*> : std::true_type {};
-	template<typename C, typename T, typename A>
-	struct is_str<std::basic_string<C, T, A>> : std::true_type {};
+    template<class T> struct is_str : std::false_type {};
+    template<> struct is_str<char*> : std::true_type {};
+    template<> struct is_str<wchar_t*> : std::true_type {};
+    template<> struct is_str<const char*> : std::true_type {};
+    template<> struct is_str<const wchar_t*> : std::true_type {};
+    template<typename C, typename T, typename A>
+    struct is_str<std::basic_string<C, T, A>> : std::true_type {};
 
     // char type traits
     template<class T> struct is_char : std::false_type {};
     template<> struct is_char<char> : std::true_type {};
     template<> struct is_char<wchar_t> : std::true_type {};
 
-	// stl container type traits
-	template <typename... Args>
-	struct is_map_type { static const bool value = false; };
+    // stl container type traits
+    template <typename... Args>
+    struct is_map_type { static const bool value = false; };
 
 #if defined(_GLIBCXX_MAP) || defined(_LIBCPP_MAP) || defined(_MAP_)
-	template <typename... Args>
-	struct is_map_type<std::map<Args...>> { static const bool value = true; };
-	template <typename... Args>
-	struct is_map_type<std::multimap<Args...>> { static const bool value = true; };
+    template <typename... Args>
+    struct is_map_type<std::map<Args...>> { static const bool value = true; };
+    template <typename... Args>
+    struct is_map_type<std::multimap<Args...>> { static const bool value = true; };
 #endif
 
 #if defined(_GLIBCXX_UNORDERED_MAP) || defined(_LIBCPP_UNORDERED_MAP) || defined(_UNORDERED_MAP_)
-	template <typename... Args>
-	struct is_map_type<std::unordered_map<Args...>> { static const bool value = true; };
-	template <typename... Args>
-	struct is_map_type<std::unordered_multimap<Args...>> { static const bool value = true; };
+    template <typename... Args>
+    struct is_map_type<std::unordered_map<Args...>> { static const bool value = true; };
+    template <typename... Args>
+    struct is_map_type<std::unordered_multimap<Args...>> { static const bool value = true; };
 #endif
 
 
@@ -205,7 +205,7 @@ namespace
                 ss << delimiter;
             }
             
-			using namespace stringify;
+	    using namespace stringify;
             ss << to_string(x);
 
         }
@@ -213,40 +213,40 @@ namespace
         return ss.str();
     }
 
-	template<typename T1, typename T2>
-	std::string to_map_string(const std::pair<T1, T2>& pr)
-	{
-		using namespace stringify;
-		std::stringstream ss;
-		ss << to_string(pr.first) << ":" << to_string(pr.second);
-		return ss.str();
-	}
+    template<typename T1, typename T2>
+    std::string to_map_string(const std::pair<T1, T2>& pr)
+    {
+	using namespace stringify;
+	std::stringstream ss;
+	ss << to_string(pr.first) << std::string(":") << to_string(pr.second);
+	return ss.str();
+    }
 
-	template<typename T>
-	std::enable_if_t<is_map_type<T>::value, std::string>
-		printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    template<typename T>
+    std::enable_if_t<is_map_type<T>::value, std::string>
+	printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    {
+	std::stringstream ss;
+	ss << get_name(_name);
+	ss << N;
+	ss << get_begin_brace(_name);
+	auto firstFlag = true;
+	for (const auto& x : ar)
 	{
-		std::stringstream ss;
-		ss << get_name(_name);
-		ss << N;
-		ss << get_begin_brace(_name);
-		auto firstFlag = true;
-		for (const auto& x : ar)
-		{
-			if (firstFlag)
-			{
-				firstFlag = false;
-			}
-			else
-			{
-				ss << delimiter;
-			}
-			ss << to_map_string(x);
+	    if (firstFlag)
+	    {
+		firstFlag = false;
+	    }
+	    else
+	    {
+		ss << delimiter;
+	    }
+	    ss << to_map_string(x);
 
-		}
-		ss << get_end_brace(_name);
-		return ss.str();
 	}
+	ss << get_end_brace(_name);
+	return ss.str();
+    }
 
     template<typename T>
     std::string reversePrintElementsCont(const T& ar, std::string&& _name, std::size_t N)
