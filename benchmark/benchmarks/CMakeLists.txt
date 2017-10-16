@@ -1,11 +1,19 @@
 find_package(Threads REQUIRED)
 
 add_library(stringify::stringify ALIAS stringify)
-#add_library(cxx-prettyprint::cxx-prettyprint ALIAS cxx-prettyprint)
+add_library(cxx-prettyprint::cxx-prettyprint ALIAS cxx-prettyprint)
 add_library(benchmark::benchmark ALIAS benchmark)
 
-add_executable(test1 test1.cpp)
+add_executable(vector_benchmark vector_benchmark.cpp)
+target_link_libraries(vector_benchmark
+	benchmark::benchmark
+	stringify::stringify
+	cxx-prettyprint::cxx-prettyprint
+)
 
-#target_link_libraries(test1 cxx-prettyprint::cxx-prettyprint)
-target_link_libraries(test1 benchmark::benchmark)
-
+add_executable(map_benchmark map_benchmark.cpp)
+target_link_libraries(map_benchmark
+	benchmark::benchmark
+	stringify::stringify
+	cxx-prettyprint::cxx-prettyprint
+)
