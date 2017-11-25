@@ -4,7 +4,6 @@
 
 auto const QUEUE_BEGIN = "[";
 auto const QUEUE_END = "]";
-auto const QUEUE_NAME = "qu";
 
 
 TEST_CASE("queue_numbers", "[queue_numbers]")
@@ -18,13 +17,13 @@ TEST_CASE("queue_numbers", "[queue_numbers]")
     std::stringstream ss2;
 
     ss1 << q_int;
-    ss2 << QUEUE_NAME << d_int.size() << QUEUE_BEGIN << "1, 2, 3, 4, 5" << QUEUE_END;
+    ss2 << QUEUE_BEGIN << "1, 2, 3, 4, 5" << QUEUE_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << q_float;
-    ss2 << QUEUE_NAME << d_float.size() << QUEUE_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << QUEUE_END;
+    ss2 << QUEUE_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << QUEUE_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -36,7 +35,7 @@ TEST_CASE("queue_string", "[queue_string]")
     std::stringstream ss1;
     std::stringstream ss2;
     ss1 << q_str;
-    ss2 << QUEUE_NAME << q_str.size() << QUEUE_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << QUEUE_END;
+    ss2 << QUEUE_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << QUEUE_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -49,6 +48,6 @@ TEST_CASE("queue_char", "[queue_char]")
     std::stringstream ss2;
 
     ss1 << q_char;
-    ss2 << QUEUE_NAME << q_char.size() << QUEUE_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << QUEUE_END;
+    ss2 << QUEUE_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << QUEUE_END;
     REQUIRE(ss1.str() == ss2.str());
 }

@@ -4,7 +4,6 @@
 
 auto const MMAP_BEGIN = "{";
 auto const MMAP_END = "}";
-auto const MMAP_NAME = "mmap";
 
 TEST_CASE("multimap_numbers", "[multimap_numbers]")
 {
@@ -28,13 +27,13 @@ TEST_CASE("multimap_numbers", "[multimap_numbers]")
     std::stringstream ss2;
 
     ss1 << mp1;
-	ss2 << MMAP_NAME << mp1.size() << MMAP_BEGIN << "1:10, 2:30, 2:300, 3:50, 4:70" << MMAP_END;
+    ss2 << MMAP_BEGIN << "1:10, 2:30, 2:300, 3:50, 4:70" << MMAP_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << mp2;
-    ss2 << MMAP_NAME << mp2.size() << MMAP_BEGIN << "1.1:10, 2.3:30, 2.7:70, 2.7:210, 9.1:50, 9.1:90" << MMAP_END;
+    ss2 << MMAP_BEGIN << "1.1:10, 2.3:30, 2.7:70, 2.7:210, 9.1:50, 9.1:90" << MMAP_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -60,13 +59,13 @@ TEST_CASE("multimap_string", "[multimap_string]")
     std::stringstream ss2;
 
     ss1 << mp_str1;
-    ss2 << MMAP_NAME << mp_str1.size() << MMAP_BEGIN << "\'1\':\"one\", \'1\':\"ekk\", \'2\':\"two\", \'3\':\"three\", \'4\':\"four\"" << MMAP_END;
+    ss2 << MMAP_BEGIN << "\'1\':\"one\", \'1\':\"ekk\", \'2\':\"two\", \'3\':\"three\", \'4\':\"four\"" << MMAP_END;
     REQUIRE(ss1.str() == ss2.str());
 
 	ss1.str(std::string());
 	ss2.str(std::string());
 
 	ss1 << mp_str2;
-	ss2 << MMAP_NAME << mp_str2.size() << MMAP_BEGIN << "\'1\':\"one\", \'1\':\"ekk\", \'2\':\"two\", \'3\':\"three\", \'4\':\"four\"" << MMAP_END;
+    ss2 << MMAP_BEGIN << "\'1\':\"one\", \'1\':\"ekk\", \'2\':\"two\", \'3\':\"three\", \'4\':\"four\"" << MMAP_END;
 	REQUIRE(ss1.str() == ss2.str());
 }

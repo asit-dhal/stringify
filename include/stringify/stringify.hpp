@@ -35,66 +35,119 @@ namespace std
 namespace
 {
 
-    constexpr size_t INVALID_SIZE_T = std::numeric_limits<size_t>::max();
     constexpr const char* delimiter = ", ";
-    enum
+
+    enum class CONTAINER_TYPE
     {
-        LEFT,
-        RIGHT
+        // sequential
+        CARRAY,
+        ARRAY,
+        VECTOR,
+        DEQUE,
+        LIST,
+        STACK,
+        QUEUE,
+        VALARRAY,
+        FORWARD_LIST,
+
+        // associative
+        MAP,
+        MULTIMAP,
+        UNORDERED_MAP,
+        UNORDERED_MULTIMAP,
+        SET,
+        MULTISET,
+        UNORDERED_SET,
+        UNORDERED_MULTISET,
+
+        // utility
+        PAIR,
+        TUPLE,
+
+        // pointer
+        ITERATOR,
+        CONST_ITERATOR,
+        REVERSE_ITERATOR,
+        CONST_REVERSE_ITERATOR,
+        POINTER,
+        CONST_POINTER,
+        SHARED_POINTER,
+        UNIQUE_POINTER,
+        WEAK_POINTER,
     };
 
-    enum
+    constexpr auto CURLY_BRACES_STR = std::array<const char*,2>{{"{", "}"}};
+    constexpr auto BOX_BRACES_STR = std::array<const char*,2>{{"[", "]"}};
+    constexpr auto PARA_BRACES_STR = std::array<const char*,2>{{"(", ")"}};
+    constexpr auto PTR_BRACES_STR = std::array<const char*,2>{{"->", ""}};
+    constexpr auto NO_BRACES_STR = std::array<const char*,2>{{"", ""}};
+
+    constexpr auto BEGIN = 0;
+    constexpr auto END = 1;
+
+    constexpr const char* get_brace(CONTAINER_TYPE container_type, int pos)
     {
-        NAME,
-        BRACE_TYPE
-    };
+        switch(container_type)
+        {
+        case CONTAINER_TYPE::CARRAY:
+        case CONTAINER_TYPE::ARRAY:
+        case CONTAINER_TYPE::VECTOR:
+        case CONTAINER_TYPE::DEQUE:
+        case CONTAINER_TYPE::LIST:
+        case CONTAINER_TYPE::STACK:
+        case CONTAINER_TYPE::QUEUE:
+        case CONTAINER_TYPE::VALARRAY:
+        case CONTAINER_TYPE::FORWARD_LIST:
+            return BOX_BRACES_STR.at(pos);
 
-    using brace_type = std::pair<std::string, std::string>;
-    brace_type const CURLY_BRACES   = std::make_pair("{", "}");
-    brace_type const ANGULAR_BRACES = std::make_pair("<", ">");
-    brace_type const BOX_BRACES     = std::make_pair("[", "]");
-    brace_type const PARA_BRACES    = std::make_pair("(", ")");
-    brace_type const PTR_BRACES     = std::make_pair("->", "");
-    brace_type const NO_BRACES      = std::make_pair("", "");
+        case CONTAINER_TYPE::MAP:
+        case CONTAINER_TYPE::MULTIMAP:
+        case CONTAINER_TYPE::UNORDERED_MAP:
+        case CONTAINER_TYPE::UNORDERED_MULTIMAP:
+            return CURLY_BRACES_STR.at(pos);
+        case CONTAINER_TYPE::SET:
+        case CONTAINER_TYPE::MULTISET:
+        case CONTAINER_TYPE::UNORDERED_SET:
+        case CONTAINER_TYPE::UNORDERED_MULTISET:
+            return PARA_BRACES_STR.at(pos);
+
+        case CONTAINER_TYPE::PAIR:
+        case CONTAINER_TYPE::TUPLE:
+            return PARA_BRACES_STR.at(pos);
 
 
-    std::unordered_map<std::string, std::pair<std::string, brace_type>> Names =
+        case CONTAINER_TYPE::ITERATOR:
+        case CONTAINER_TYPE::CONST_ITERATOR:
+        case CONTAINER_TYPE::REVERSE_ITERATOR:
+        case CONTAINER_TYPE::CONST_REVERSE_ITERATOR:
+        case CONTAINER_TYPE::POINTER:
+        case CONTAINER_TYPE::CONST_POINTER:
+        case CONTAINER_TYPE::SHARED_POINTER:
+        case CONTAINER_TYPE::UNIQUE_POINTER:
+        case CONTAINER_TYPE::WEAK_POINTER:
+            return PTR_BRACES_STR.at(pos);
+
+        default:
+            return NO_BRACES_STR.at(pos);
+        }
+    }
+
+    std::string get_name(CONTAINER_TYPE containertype)
     {
-        { "carray", std::make_pair("carr", BOX_BRACES) },
-        { "array", std::make_pair("arr", BOX_BRACES) },
-        { "vector", std::make_pair("vec", BOX_BRACES) },
-        { "deque", std::make_pair("deq", BOX_BRACES) },
-        { "list", std::make_pair("lst", BOX_BRACES) },
-        { "tuple", std::make_pair("tp", PARA_BRACES) },
-        { "pair", std::make_pair("pr", PARA_BRACES) },
-        { "map", std::make_pair("map", CURLY_BRACES) },
-        { "multimap", std::make_pair("mmap", CURLY_BRACES) },
-        { "set", std::make_pair("set", PARA_BRACES) },
-        { "multiset", std::make_pair("mset", PARA_BRACES) },
-        { "unordered_map", std::make_pair("umap", CURLY_BRACES) },
-        { "unordered_multimap", std::make_pair("ummap", CURLY_BRACES) },
-        { "unordered_multiset", std::make_pair("umset", CURLY_BRACES) },
-        { "unordered_set", std::make_pair("uset", CURLY_BRACES) },
-        { "valarray", std::make_pair("valarr", CURLY_BRACES) },
-        { "forward_list", std::make_pair("flst", BOX_BRACES) },
-        { "stack", std::make_pair("st", BOX_BRACES) },
-        { "queue", std::make_pair("qu", BOX_BRACES) },
-
-        { "iterator", std::make_pair("itr", PTR_BRACES) },
-        { "const_iterator", std::make_pair("citr", PTR_BRACES) },
-        { "reverse_iterator", std::make_pair("ritr", PTR_BRACES) },
-        { "const_reverse_iterator", std::make_pair("critr" , PTR_BRACES) },
-
-        { "pointer", std::make_pair("ptr", PTR_BRACES) },
-        { "const_pointer", std::make_pair("cptr", PTR_BRACES) },
-        { "shared_ptr", std::make_pair("sp", PTR_BRACES) },
-        { "unique_ptr", std::make_pair("up", PTR_BRACES) },
-        { "weak_ptr", std::make_pair("wp", PTR_BRACES) },
-    };
-
-    inline std::string get_name(std::string _name) { return std::get<NAME>(Names[_name]); }
-    inline std::string get_begin_brace(std::string _name) { return std::get<LEFT>(std::get<BRACE_TYPE>(Names[_name])); }
-    inline std::string get_end_brace(std::string _name) { return std::get<RIGHT>(std::get<BRACE_TYPE>(Names[_name])); }
+        switch(containertype)
+        {
+        case CONTAINER_TYPE::ITERATOR: return std::string("itr");
+        case CONTAINER_TYPE::CONST_ITERATOR: return std::string("c_itr");
+        case CONTAINER_TYPE::REVERSE_ITERATOR: return std::string("r_itr");
+        case CONTAINER_TYPE::CONST_REVERSE_ITERATOR: return std::string("cr_itr");
+        case CONTAINER_TYPE::POINTER: return std::string("ptr");
+        case CONTAINER_TYPE::CONST_POINTER: return std::string("c_ptr");
+        case CONTAINER_TYPE::SHARED_POINTER: return std::string("s_ptr");
+        case CONTAINER_TYPE::UNIQUE_POINTER: return std::string("u_ptr");
+        case CONTAINER_TYPE::WEAK_POINTER: return std::string("w_ptr");
+        default: return std::string("");
+        }
+    }
 
     // string type traits
     template<class T> struct is_str : std::false_type {};
@@ -133,18 +186,20 @@ namespace
     std::enable_if_t<is_str<T>::value, std::string>
         to_string(const T& val)
     {
-        std::stringstream ss;
-        ss << "\"" << val << "\"";
-        return ss.str();
+        std::string str = "\"";
+        str += val;
+        str += "\"";
+        return str;
     }
 
     template<typename T>
     std::enable_if_t<is_char<T>::value, std::string>
         to_string(const T& val)
     {
-        std::stringstream ss;
-        ss << "\'" << val << "\'";
-        return ss.str();
+        std::string str = "\'";
+        str += val;
+        str += "\'";
+        return str;
     }
 
 
@@ -161,7 +216,7 @@ namespace
         template<typename... Types>
         static std::string print(const std::tuple<Types...>& ar)
         {
-            std::stringstream ss;
+            std::ostringstream ss;
             ss << TuplePrinter<N - 1>::print(ar);
             ss << to_string(std::get<N - 1>(ar));
             ss << delimiter;
@@ -182,16 +237,11 @@ namespace
 
     template<typename T>
 	std::enable_if_t<!is_map_type<T>::value, std::string> 
-		printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+        printElementsCont(const T& ar, CONTAINER_TYPE containerType)
     {
-        std::stringstream ss;
-        ss << get_name(_name);
-        if (N != INVALID_SIZE_T)
-        {
-            ss << N;
-        }
+        std::ostringstream ss;
 
-        ss << get_begin_brace(_name);
+        ss << get_brace(containerType, BEGIN);
         
         auto firstFlag = true;
         for (const auto& x : ar)
@@ -205,60 +255,54 @@ namespace
                 ss << delimiter;
             }
             
-	    using namespace stringify;
+            using namespace stringify;
             ss << to_string(x);
 
         }
-        ss << get_end_brace(_name);
+        ss << get_brace(containerType, END);
         return ss.str();
     }
 
     template<typename T1, typename T2>
     std::string to_map_string(const std::pair<T1, T2>& pr)
     {
-	using namespace stringify;
-	std::stringstream ss;
-	ss << to_string(pr.first) << std::string(":") << to_string(pr.second);
-	return ss.str();
+        using namespace stringify;
+        std::ostringstream oss;
+        oss << to_string(pr.first);
+        oss << ":";
+        oss << to_string(pr.second);
+        return oss.str();
     }
 
     template<typename T>
     std::enable_if_t<is_map_type<T>::value, std::string>
-	printElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    printElementsCont(const T& ar, CONTAINER_TYPE containerType)
     {
-	std::stringstream ss;
-	ss << get_name(_name);
-	ss << N;
-	ss << get_begin_brace(_name);
-	auto firstFlag = true;
-	for (const auto& x : ar)
-	{
-	    if (firstFlag)
-	    {
-		firstFlag = false;
-	    }
-	    else
-	    {
-		ss << delimiter;
-	    }
-	    ss << to_map_string(x);
-
-	}
-	ss << get_end_brace(_name);
-	return ss.str();
+        std::stringstream ss;
+        ss << get_brace(containerType, BEGIN);
+        auto firstFlag = true;
+        for (const auto& x : ar)
+        {
+            if (firstFlag)
+            {
+                firstFlag = false;
+            }
+            else
+            {
+                ss << delimiter;
+            }
+            ss << to_map_string(x);
+        }
+        ss << get_brace(containerType, END);
+        return ss.str();
     }
 
     template<typename T>
-    std::string reversePrintElementsCont(const T& ar, std::string&& _name, std::size_t N)
+    std::string reversePrintElementsCont(const T& ar, CONTAINER_TYPE containerType)
     {
-        std::stringstream ss;
-        ss << get_name(_name);
-        if (N != INVALID_SIZE_T)
-        {
-            ss << N;
-        }
+        std::ostringstream ss;
 
-        ss << get_begin_brace(_name);
+        ss << get_brace(containerType, BEGIN);
 
         auto firstFlag = true;
         for(auto it = ar.rbegin(); it != ar.rend(); it++)
@@ -276,35 +320,30 @@ namespace
             ss << to_string(*it);
 
         }
-        ss << get_end_brace(_name);
+
+        ss << get_brace(containerType, END);
         return ss.str();
     }
 
     template<typename T>
-    std::string printElementsPtr(const T& ptr, std::string&& _name)
+    std::string printElementsPtr(const T& ptr, CONTAINER_TYPE containerType)
     {
-        std::stringstream ss;
-        ss << get_name(_name);
-        ss << get_begin_brace(_name);
+        std::ostringstream ss;
+        ss << get_name(containerType);
+        ss << get_brace(containerType, BEGIN);
         ss << to_string(*ptr);
         return ss.str();
     }
 
     template<typename... TArgs>
-    std::string printElementsTup(const std::tuple<TArgs...>& tup, std::string&& _name)
+    std::string printElementsTup(const std::tuple<TArgs...>& tup, CONTAINER_TYPE containerType)
     {
-        std::stringstream ss;
-        ss << get_name(_name);
-        constexpr size_t SZ = std::tuple_size<
-            std::tuple<TArgs... >> ::value;
-        if (_name != "pair")
-        {
-            ss << SZ;
-        }
-        ss << get_begin_brace(_name);
+        std::ostringstream ss;
+        constexpr size_t SZ = std::tuple_size<std::tuple<TArgs... >> ::value;
+        ss << get_brace(containerType, BEGIN);
         auto tupleStr = TuplePrinter<SZ>::print(tup);
         ss << tupleStr.substr(0, tupleStr.size() - std::strlen(delimiter));
-        ss << get_end_brace(_name);
+        ss << get_brace(containerType, END);
         return ss.str();
     }
 
@@ -315,13 +354,13 @@ namespace stringify
     template<typename T1, typename T2>
     std::string to_string(const std::pair<T1, T2>& pr)
     {
-        return printElementsTup(std::make_tuple(pr.first, pr.second), "pair");
+        return printElementsTup(std::make_tuple(pr.first, pr.second), CONTAINER_TYPE::PAIR);
     }
 
     template<typename... Types>
     std::string to_string(const std::tuple<Types...>& tup)
     {
-        return printElementsTup(tup, "tuple");
+        return printElementsTup(tup, CONTAINER_TYPE::TUPLE);
     }
 
     template<typename T1, typename T2>
@@ -344,7 +383,7 @@ namespace stringify
     template<typename T, typename _Alloc>
     std::string to_string(const std::vector<T, _Alloc>& ar)
     {
-        return printElementsCont(ar, "vector", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::VECTOR);
     }
 
     template<typename T, typename _Alloc>
@@ -361,7 +400,7 @@ namespace stringify
     template<typename T, std::size_t _N>
     std::string to_string(const std::array<T, _N>& ar)
     {
-        return printElementsCont(ar, "array", _N);
+        return printElementsCont(ar, CONTAINER_TYPE::ARRAY);
     }
 
     template<typename T, std::size_t _N>
@@ -378,7 +417,7 @@ namespace stringify
     template<typename T>
     std::ostream& operator<<(std::ostream& xx, const std::valarray<T>& ar)
     {
-        xx << printElementsCont(ar, "valarray", ar.size());
+        xx << printElementsCont(ar, CONTAINER_TYPE::VALARRAY);
         return xx;
     }
 
@@ -397,7 +436,7 @@ namespace stringify
     template<typename T, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::deque<T, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "deque", ar.size());
+        xx << printElementsCont(ar, CONTAINER_TYPE::DEQUE);
         return xx;
     }
 
@@ -407,7 +446,7 @@ namespace stringify
     std::enable_if_t<!(std::is_same<char, T>::value || std::is_same<wchar_t, T>::value), std::ostream&>
         operator<<(std::ostream& xx, const T(&ar)[N])
     {
-        xx << printElementsCont(ar, "carray", N);
+        xx << printElementsCont(ar, CONTAINER_TYPE::CARRAY);
         return xx;
     }
 
@@ -419,25 +458,21 @@ namespace stringify
 
     template<typename T,
         typename S = typename std::iterator_traits<T>::reference>
-#ifdef SHOW_ADDR
-        std::enable_if_t<!std::is_pointer<T>::value, std::ostream&>
-#else
         std::enable_if_t<!(std::is_same<T, char const*>::value ||
             std::is_same<T, wchar_t const*>::value ||
             std::is_same<T, wchar_t*>::value ||
             std::is_same<T, char*>::value), std::ostream&>
-#endif
         operator<<(std::ostream& xx, const T& it)
     {
         if (std::is_pointer<T>::value)
         {
             if (std::is_const<std::remove_reference_t<S>>::value)
             {
-                xx << printElementsPtr(it, "const_pointer");
+                xx << printElementsPtr(it, CONTAINER_TYPE::CONST_POINTER);
             }
             else
             {
-                xx << printElementsPtr(it, "pointer");
+                xx << printElementsPtr(it, CONTAINER_TYPE::POINTER);
             }
         }
         else
@@ -446,22 +481,22 @@ namespace stringify
             {
                 if (std::is_const<std::remove_reference_t<S>>::value)
                 {
-                    xx << printElementsPtr(it, "const_reverse_iterator");
+                    xx << printElementsPtr(it, CONTAINER_TYPE::CONST_REVERSE_ITERATOR);
                 }
                 else
                 {
-                    xx << printElementsPtr(it, "reverse_iterator");
+                    xx << printElementsPtr(it, CONTAINER_TYPE::REVERSE_ITERATOR);
                 }
             }
             else
             {
                 if (std::is_const<std::remove_reference_t<S>>::value)
                 {
-                    xx << printElementsPtr(it, "const_iterator");
+                    xx << printElementsPtr(it, CONTAINER_TYPE::CONST_ITERATOR);
                 }
                 else
                 {
-                    xx << printElementsPtr(it, "iterator");
+                    xx << printElementsPtr(it, CONTAINER_TYPE::ITERATOR);
                 }
             }
         }
@@ -472,7 +507,7 @@ namespace stringify
     template<typename T, typename _Alloc>
     std::string to_string(const std::list<T, _Alloc>& ar)
     {
-        return printElementsCont(ar, "list", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::LIST);
     }
 
     template<typename T, typename _Alloc>
@@ -487,7 +522,7 @@ namespace stringify
     template<typename T, typename _Alloc>
     std::string to_string(const std::forward_list<T, _Alloc>& ar)
     {
-        return printElementsCont(ar, "forward_list", INVALID_SIZE_T);
+        return printElementsCont(ar, CONTAINER_TYPE::FORWARD_LIST);
     }
 
     template<typename T, typename _Alloc>
@@ -503,14 +538,14 @@ namespace stringify
     template<typename T, typename _Hasher, typename _Key, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::unordered_set<T, _Hasher, _Key, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "unordered_set", ar.size());
+        xx << printElementsCont(ar, CONTAINER_TYPE::UNORDERED_SET);
         return xx;
     }
 
     template<typename T, typename _Hasher, typename _Key, typename _Alloc>
     std::ostream& operator<<(std::ostream& xx, const std::unordered_multiset<T, _Hasher, _Key, _Alloc>& ar)
     {
-        xx << printElementsCont(ar, "unordered_multiset", ar.size());
+        xx << printElementsCont(ar, CONTAINER_TYPE::UNORDERED_MULTISET);
         return xx;
     }
 #endif
@@ -520,13 +555,13 @@ namespace stringify
     template<typename T, typename _Pr, typename _Alloc>
     std::string to_string(const std::set<T, _Pr, _Alloc>& ar)
     {
-        return printElementsCont(ar, "set", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::SET);
     }
 
     template<typename T, typename _Pr, typename _Alloc>
     std::string to_string(const std::multiset<T, _Pr, _Alloc>& ar)
     {
-        return printElementsCont(ar, "multiset", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::MULTISET);
     }
 
     template<typename T, typename _Pr, typename _Alloc>
@@ -549,13 +584,13 @@ namespace stringify
 	template<typename T1, typename T2, typename _Pr, typename _Alloc>
 	std::string to_string(const std::map<T1, T2, _Pr, _Alloc>& ar)
 	{
-		return printElementsCont(ar, "map", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::MAP);
 	}
 
 	template<typename T1, typename T2, typename _Pr, typename _Alloc>
 	std::string to_string(const std::multimap<T1, T2, _Pr, _Alloc>& ar)
 	{
-		return printElementsCont(ar, "multimap", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::MULTIMAP);
 	}
 
     template<typename T1, typename T2, typename _Pr, typename _Alloc>
@@ -578,13 +613,13 @@ namespace stringify
 	template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
 	std::string to_string(const std::unordered_map<T1, T2, _Hasher, _Key, _Alloc>& ar)
 	{
-		return printElementsCont(ar, "unordered_map", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::UNORDERED_MAP);
 	}
 
 	template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
 	std::string to_string(const std::unordered_multimap<T1, T2, _Hasher, _Key, _Alloc>& ar)
 	{
-		return printElementsCont(ar, "unordered_multimap", ar.size());
+        return printElementsCont(ar, CONTAINER_TYPE::UNORDERED_MULTIMAP);
 	}
 
     template<typename T1, typename T2, typename _Hasher, typename _Key, typename _Alloc>
@@ -616,7 +651,7 @@ namespace stringify
             vt.push_back(ar_clone.top());
             ar_clone.pop();
         }
-        return reversePrintElementsCont(vt, "stack", vt.size());
+        return reversePrintElementsCont(vt, CONTAINER_TYPE::STACK);
     }
 
     template<typename T>
@@ -642,7 +677,7 @@ namespace stringify
             vt.push_back(ar_clone.front());
             ar_clone.pop();
         }
-        return printElementsCont(vt, "queue", vt.size());
+        return printElementsCont(vt, CONTAINER_TYPE::QUEUE);
     }
 
     template<typename T>
@@ -660,56 +695,42 @@ namespace stringify
     template<typename T>
     std::string to_string(const std::shared_ptr<T>& sp)
     {
-        std::stringstream ss;
         if (sp)
         {
-            ss << printElementsPtr(sp, "shared_ptr");
-            ss << delimiter;
-            ss << "ref_cnt=" << sp.use_count();
+           return printElementsPtr(sp, CONTAINER_TYPE::SHARED_POINTER);
         }
         else
         {
-            ss << get_name("shared_ptr");
-            ss << get_begin_brace("shared_ptr");
-            ss << "nullptr";
+            return std::string("nullptr");
         }
-        return ss.str();
     }
 
     template<typename T>
     std::string to_string(const std::unique_ptr<T>& up)
     {
-        std::stringstream ss;
         // TODO: handle nullptr
         if (up)
         {
-            ss << printElementsPtr(up, "unique_ptr");
+            return printElementsPtr(up, CONTAINER_TYPE::UNIQUE_POINTER);
         }
         else
         {
-            ss << get_name("unique_ptr");
-            ss << get_begin_brace("unique_ptr");
-            ss << "nullptr";
+            return std::string("nullptr");
         }
-        return ss.str();
     }
 
     template<typename T>
     std::string to_string(const std::weak_ptr<T>& wp)
     {
-        std::stringstream ss;
         if (auto sp = wp.lock())
         {
-            ss << printElementsPtr(sp, "weak_ptr");
+            return printElementsPtr(sp, CONTAINER_TYPE::WEAK_POINTER);
         }
         else
         {
             // TODO: no idea how to hanlde
-            ss << get_name("weak_ptr");
-            ss << get_begin_brace("weak_ptr");
-            ss << "nullptr";
+            return std::string("nullptr");
         }
-        return ss.str();
     }
 
     template<typename T>

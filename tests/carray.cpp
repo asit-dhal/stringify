@@ -13,13 +13,13 @@ TEST_CASE("carray_numbers", "[carray_numbers]")
     std::stringstream ss2;
 
     ss1 << arr_int;
-    ss2 << CARRAY_NAME << 5 << CARRAY_BEGIN << "1, 2, 3, 4, 5" << CARRAY_END;
+    ss2 << CARRAY_BEGIN << "1, 2, 3, 4, 5" << CARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << arr_float;
-    ss2 << CARRAY_NAME << 5 << CARRAY_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << CARRAY_END;
+    ss2 << CARRAY_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << CARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -31,7 +31,7 @@ TEST_CASE("carray_string", "[carray_string]")
     std::stringstream ss2;
 
     ss1 << carray_str;
-    ss2 << CARRAY_NAME << 4 << CARRAY_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << CARRAY_END;
+    ss2 << CARRAY_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << CARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 

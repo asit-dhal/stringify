@@ -3,7 +3,6 @@
 
 auto const ARRAY_BEGIN = "[";
 auto const ARRAY_END = "]";
-auto const ARRAY_NAME = "arr";
 
 TEST_CASE("array_numbers", "[array_numbers]")
 {
@@ -14,13 +13,13 @@ TEST_CASE("array_numbers", "[array_numbers]")
     std::stringstream ss2;
 
     ss1 << arr_int;
-    ss2 << ARRAY_NAME << 5 << ARRAY_BEGIN << "1, 2, 3, 4, 5" << ARRAY_END;
+    ss2 << ARRAY_BEGIN << "1, 2, 3, 4, 5" << ARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << arr_float;
-    ss2 << ARRAY_NAME << 5 << ARRAY_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << ARRAY_END;
+    ss2 << ARRAY_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << ARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -32,7 +31,7 @@ TEST_CASE("array_string", "[array_string]")
     std::stringstream ss2;
 
     ss1 << carray_str;
-    ss2 << ARRAY_NAME << 4 << ARRAY_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << ARRAY_END;
+    ss2 << ARRAY_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << ARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -43,6 +42,6 @@ TEST_CASE("array_char", "[array_char]")
     std::stringstream ss1;
     std::stringstream ss2;
     ss1 << array_char;
-    ss2 << ARRAY_NAME << 4 << ARRAY_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << ARRAY_END;
+    ss2 << ARRAY_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << ARRAY_END;
     REQUIRE(ss1.str() == ss2.str());
 }

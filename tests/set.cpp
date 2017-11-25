@@ -3,7 +3,6 @@
 
 auto const SET_BEGIN = "(";
 auto const SET_END = ")";
-auto const SET_NAME = "set";
 
 TEST_CASE("set_numbers", "[set_numbers]")
 {
@@ -15,19 +14,19 @@ TEST_CASE("set_numbers", "[set_numbers]")
     std::stringstream ss2;
 
     ss1 << s_int;
-    ss2 << SET_NAME << s_int.size() << SET_BEGIN << "1, 2, 3, 4, 5" << SET_END;
+    ss2 << SET_BEGIN << "1, 2, 3, 4, 5" << SET_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << s_dup_int;
-    ss2 << SET_NAME << s_dup_int.size() << SET_BEGIN << "0, 1, 2, 3, 4, 5" << SET_END;
+    ss2 << SET_BEGIN << "0, 1, 2, 3, 4, 5" << SET_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << s_float;
-    ss2 << SET_NAME << s_int.size() << SET_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << SET_END;
+    ss2 << SET_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << SET_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -39,7 +38,7 @@ TEST_CASE("set_string", "[set_string]")
     std::stringstream ss2;
 
     ss1 << s_str;
-    ss2 << SET_NAME << s_str.size() << SET_BEGIN << "\"four\", \"one\", \"three\", \"two\"" << SET_END;
+    ss2 << SET_BEGIN << "\"four\", \"one\", \"three\", \"two\"" << SET_END;
     REQUIRE(ss1.str() == ss2.str()); // sorted
 }
 
@@ -51,6 +50,6 @@ TEST_CASE("set_char", "[set_char]")
     std::stringstream ss2;
 
     ss1 << s_char;
-    ss2 << SET_NAME << s_char.size() << SET_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << SET_END;
+    ss2 << SET_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << SET_END;
     REQUIRE(ss1.str() == ss2.str());
 }

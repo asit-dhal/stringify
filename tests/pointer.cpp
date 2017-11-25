@@ -2,7 +2,7 @@
 
 auto const POINTER_BEGIN = "->";
 auto const POINTER_NAME = "ptr";
-auto const CPOINTER_NAME = "cptr";
+auto const CPOINTER_NAME = "c_ptr";
 
 TEST_CASE("pointer_numbers", "[pointer_numbers]")
 {

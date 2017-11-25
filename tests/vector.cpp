@@ -3,7 +3,6 @@
 
 auto const VECTOR_BEGIN = "[";
 auto const VECTOR_END = "]";
-auto const VECTOR_NAME = "vec";
 
 TEST_CASE("vector_numbers", "[vector_numbers]")
 {
@@ -14,13 +13,13 @@ TEST_CASE("vector_numbers", "[vector_numbers]")
     std::stringstream ss2;
 
     ss1 << v_int;
-    ss2 << VECTOR_NAME << v_int.size() << VECTOR_BEGIN << "1, 2, 3, 4, 5" << VECTOR_END;
+    ss2 << VECTOR_BEGIN << "1, 2, 3, 4, 5" << VECTOR_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << v_float;
-    ss2 << VECTOR_NAME << v_float.size() << VECTOR_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << VECTOR_END;
+    ss2 << VECTOR_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << VECTOR_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -32,7 +31,7 @@ TEST_CASE("vector_string", "[vector_string]")
     std::stringstream ss2;
 
     ss1 << v_str;
-    ss2 << VECTOR_NAME << v_str.size() << VECTOR_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << VECTOR_END;
+    ss2 << VECTOR_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << VECTOR_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -44,6 +43,6 @@ TEST_CASE("vector_char", "[vector_char]")
     std::stringstream ss2;
 
     ss1 << v_char;
-    ss2 << VECTOR_NAME << v_char.size() << VECTOR_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << VECTOR_END;
+    ss2 << VECTOR_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << VECTOR_END;
     REQUIRE(ss1.str() == ss2.str());
 }

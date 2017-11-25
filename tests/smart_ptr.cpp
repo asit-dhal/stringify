@@ -13,24 +13,20 @@ TEST_CASE("shared_ptr", "[shared_ptr]")
     auto ptr4 = ptr2;
 
     ss << ptr1;
-    REQUIRE(ss.str() == "sp->2, ref_cnt=1");
+    REQUIRE(ss.str() == "s_ptr->2");
 
     ss.str(std::string());
     ss << ptr2;
-    REQUIRE(ss.str() == "sp->\"test\", ref_cnt=3");
+    REQUIRE(ss.str() == "s_ptr->\"test\"");
 
     ss.str(std::string());
     ss << ptr3;
-    REQUIRE(ss.str() == "sp->\"test\", ref_cnt=3");
+    REQUIRE(ss.str() == "s_ptr->\"test\"");
 
     ptr4 = nullptr;
     ss.str(std::string());
-    ss << ptr3;
-    REQUIRE(ss.str() == "sp->\"test\", ref_cnt=2");
-
-    ss.str(std::string());
     ss << ptr4;
-    REQUIRE(ss.str() == "sp->nullptr");
+    REQUIRE(ss.str() == "nullptr");
 }
 
 TEST_CASE("unique_ptr", "[unique_ptr]")
@@ -42,16 +38,16 @@ TEST_CASE("unique_ptr", "[unique_ptr]")
     std::unique_ptr<std::string> ptr2 = std::make_unique<std::string>("test");
 
     ss << ptr1;
-    REQUIRE(ss.str() == "up->2");
+    REQUIRE(ss.str() == "u_ptr->2");
 
     ss.str(std::string());
     ss << ptr2;
-    REQUIRE(ss.str() == "up->\"test\"");
+    REQUIRE(ss.str() == "u_ptr->\"test\"");
 
     ptr1.reset();
     ss.str(std::string());
     ss << ptr1;
-    REQUIRE(ss.str() == "up->nullptr");
+    REQUIRE(ss.str() == "nullptr");
 }
 
 TEST_CASE("weak_ptr", "[weak_ptr]")
@@ -65,14 +61,14 @@ TEST_CASE("weak_ptr", "[weak_ptr]")
     std::weak_ptr<std::string> wk_ptr2 = sp_ptr2;
     
     ss << wk_ptr1;
-    REQUIRE(ss.str() == "wp->2");
+    REQUIRE(ss.str() == "w_ptr->2");
 
     ss.str(std::string());
     ss << wk_ptr2;
-    REQUIRE(ss.str() == "wp->\"test\"");
+    REQUIRE(ss.str() == "w_ptr->\"test\"");
 
     sp_ptr1.reset();
     ss.str(std::string());
     ss << wk_ptr1;
-    REQUIRE(ss.str() == "wp->nullptr");
+    REQUIRE(ss.str() == "nullptr");
 }

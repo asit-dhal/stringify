@@ -4,9 +4,9 @@
 
 auto const ITERATOR_BEGIN = "->";
 auto const ITERATOR_NAME = "itr";
-auto const CITERATOR_NAME = "citr";
-auto const REV_ITERATOR_NAME = "ritr";
-auto const CREV_ITERATOR_NAME = "critr";
+auto const CITERATOR_NAME = "c_itr";
+auto const REV_ITERATOR_NAME = "r_itr";
+auto const CREV_ITERATOR_NAME = "cr_itr";
 
 TEST_CASE("iterator_num", "[iterator_num]")
 {

@@ -4,7 +4,6 @@
 
 auto const STACK_BEGIN = "[";
 auto const STACK_END = "]";
-auto const STACK_NAME = "st";
 
 
 TEST_CASE("stack_numbers", "[stack_numbers]")
@@ -18,13 +17,13 @@ TEST_CASE("stack_numbers", "[stack_numbers]")
     std::stringstream ss2;
 
     ss1 << s_int;
-    ss2 << STACK_NAME << d_int.size() << STACK_BEGIN << "1, 2, 3, 4, 5" << STACK_END;
+    ss2 << STACK_BEGIN << "1, 2, 3, 4, 5" << STACK_END;
     REQUIRE(ss1.str() == ss2.str());
 
     ss1.str(std::string());
     ss2.str(std::string());
     ss1 << s_float;
-    ss2 << STACK_NAME << d_float.size() << STACK_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << STACK_END;
+    ss2 << STACK_BEGIN << "1.1, 2.2, 3.3, 4.4, 5.5" << STACK_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -36,7 +35,7 @@ TEST_CASE("stack_string", "[stack_string]")
     std::stringstream ss1;
     std::stringstream ss2;
     ss1 << s_str;
-    ss2 << STACK_NAME << s_str.size() << STACK_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << STACK_END;
+    ss2 << STACK_BEGIN << "\"one\", \"two\", \"three\", \"four\"" << STACK_END;
     REQUIRE(ss1.str() == ss2.str());
 }
 
@@ -49,6 +48,6 @@ TEST_CASE("stack_char", "[stack_char]")
     std::stringstream ss2;
 
     ss1 << s_char;
-    ss2 << STACK_NAME << s_char.size() << STACK_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << STACK_END;
+    ss2 << STACK_BEGIN << "\'a\', \'b\', \'c\', \'d\'" << STACK_END;
     REQUIRE(ss1.str() == ss2.str());
 }
