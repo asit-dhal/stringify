@@ -1,7 +1,5 @@
 ### stringify :- pretty print stl containers
-- based on https://github.com/mnciitbhu/printers
-- can print all stl containers to output stream
-- needs C++11/14 compliant compiler _clang not supported_
+- can print all stl containers to output stream_
 
 ### Build Status
 | Build  | Status |
